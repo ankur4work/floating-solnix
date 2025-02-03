@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "53b3349f658a984d34a17c22ac334e19"
+application_url = "https://wendy-whether-pk-timber.trycloudflare.com"
+embedded = true
+name = "ankit kumar dev app"
+handle = "ankit-kumar-dev-app"
+
+[webhooks]
+api_version = "2024-10"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://wendy-whether-pk-timber.trycloudflare.com/auth/callback",
+  "https://wendy-whether-pk-timber.trycloudflare.com/auth/shopify/callback",
+  "https://wendy-whether-pk-timber.trycloudflare.com/api/auth/callback"
+]
+
+[pos]
+embedded = false
+
+[build]
+dev_store_url = "ankitkumar-meroxio-devstore.myshopify.com"
+automatically_update_urls_on_dev = true
