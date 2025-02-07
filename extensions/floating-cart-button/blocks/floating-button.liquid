@@ -1,78 +1,81 @@
+{% comment %} {% if block.settings.selectDesign == "design1" %} {% endcomment %}
 
 <style>
- 
- @media(min-width:769px){
-    .mx_floating_elpySv{
-display:none;}
-}
-    .mx_floating_elpySv {
-          position: fixed;
-          bottom: -100%;
-          left: 0px;
-          z-index: 999;
-          background: white;
-          width: 100%;
-          padding: 8px 16px;
-          height: 72px; 
-      }
 
-      .mx_floating_viewcart-box {
-          display: flex;
-         -webkit-box-pack: justify;
-          justify-content: space-between;
-          -webkit-box-align: center;
-          align-items: center;
-          font-size: 1.2rem;
-          font-weight: 400;
-          line-height: 1.2em;
-          letter-spacing: 0px;
-          padding: 2px 5px;
-          width: 100%;
-          background-color:{{ block.settings.bg_color }};
-          color: {{ block.settings.text_color }};
-          border-radius: 8px;
-          height: 56px;
-      }
-
-  .mx_floating_elpySv .mx_floating_flexview {
-      display: flex
-  ;
-      -webkit-box-align: center;
-      align-items: center;
-      gap:10px;
+   @media(min-width:769px){
+      .mx_floating_elpySv{
+  display:none;}
   }
+      .mx_floating_elpySv {
+            position: fixed;
+            bottom: -100%;
+            left: 0px;
+            z-index: 999;
+            background: {{block.settings.Wrapper_bg_color}};
+            width: 100%;
+            padding: 8px 16px;
+            height: 72px;
+        }
 
-  .mx_floating_bdcKJE {
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      background: none;
-      color:{{ block.settings.text_color }};
-  }
-  .mx_floating_price{
-  color:{{ block.settings.text_color }};
+        .mx_floating_viewcart-box {
+            display: flex;
+           -webkit-box-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1.2em;
+            letter-spacing: 0px;
+            padding: 2px 5px;
+            width: 100%;
+            background-color:{{ block.settings.bg_color }};
+            color: {{ block.settings.text_color }};
+            border-radius: 8px;
+            height: 56px;
+        }
 
+    .mx_floating_elpySv .mx_floating_flexview {
+        display: flex
+    ;
+        -webkit-box-align: center;
+        align-items: center;
+        gap:10px;
+    }
+
+    .mx_floating_bdcKJE {
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        background: none;
+        color:{{ block.settings.text_color }};
+    }
+    .mx_floating_price{
+    color:{{ block.settings.text_color }};
+
+    }
+    .mx_custome_underline{
+    text-decoration:none;
+  cursor:pointer;}
+    .mx_floating_cartIcons svg path{
+  fill:{{ block.settings.text_color }}}
+  .mx_custom_show{
+      display:block;
   }
-  .mx_custome_underline{
-  text-decoration:none;
-cursor:pointer;}
-  .mx_floating_cartIcons svg path{
-fill:{{ block.settings.text_color }}}
-.mx_custom_show{
-    display:block;
-}
-.mx_custom_hide{
-    display:none;
-}
-.activeCompareBar{
-bottom:0%}
+  .mx_custom_hide{
+      display:none;
+  }
+  .activeCompareBar{
+  bottom:0%}
 </style>
 
 
-{% if block.settings.floating_cart_box_ %}
 
+
+
+{% if block.settings.floating_cart_box_ %}
   <div class="mx_floating_sc-hSdWYo mx_floating_elpySv mx_floating_btn   ">
-    <div class="mx_floating_viewcart-box">
+    <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
       <div class="mx_floating_flexview">
         <div class="mx_floating_cartIcons">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -83,7 +86,10 @@ bottom:0%}
           <div class="mx_floating_sc-iAyFgw mx_floating_dIWcMN">
             <div>
               <span class="mx_floating_stickycartcount" style="font-weight:bold;">{{ cart.item_count }}</span>
-              <span class="mx_floating_stickycartcounttext">items</span>
+              <span class="mx_floating_stickycartcounttext">{{ 'ratings.defaultProperty.show' | t }}</span>
+
+
+
             </div>
             <div class="mx_floating_price">
               <span class="mx_floating_stickycartprice" style="font-weight:bold;">
@@ -94,14 +100,118 @@ bottom:0%}
           </div>
         </div>
       </div>
-      <a  class="mx_custome_underline openDrawer openPopup mxopenCartPage" id="" >
+      <a class="mx_custome_underline openDrawer openPopup mxopenCartPage" id="">
         <button class="mx_floating_sc-eHgmQL mx_floating_bdcKJE mx_floating_flexview mx_floating_mx_show_cart">
-          <div style="display: flex; cursor:pointer; justify-content: center; align-items: center;">VIEW CART</div>
+          <div style="display: flex; cursor:pointer; justify-content: center; align-items: center;">{{ 'ratings.defaultProperty.cart' | t }}</div>
         </button>
       </a>
     </div>
   </div>
 {% endif %}
+{% comment %} {% endif %} {% endcomment %}
+
+{% comment %} {% if block.settings.selectDesign == "design2" %}
+
+  <style>
+    .mx_floating_sc-hSdWYo {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 999;
+    }
+    
+    .mx_custome_underline svg {
+      width: 24px;
+      height: 24px;
+      fill: black;
+    }
+    
+    .mx_floating_stickycartcount {
+      position: absolute;
+      top: -22px;
+      right: -22px;
+  
+      background: #e74c3c;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      
+      width: 20px; /* Ensures a perfect circle */
+      height: 20px; /* Ensures a perfect circle */
+      line-height: 20px; /* Centers text inside */
+      border-radius: 50%; /* Makes it a circle */
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      text-align: center;
+    }
+    
+    .mx_floating_viewcart-box {
+      position: relative;
+    }
+    
+    .mx_floating_price {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 4px 4px;
+      border-radius: 12px;
+      font-size: 9px;
+      font-weight: bold;
+      color: #000;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+  
+    }
+    
+
+  </style>
+
+  {% if block.settings.floating_cart_box_ %}
+    <div class="mx_floating_sc-hSdWYo mx_floating_elpySv mx_floating_btn   ">
+      <div class="mx_floating_viewcart-box">
+        <div class="mx_floating_flexview">
+      
+          <div class="mx_floating_cartData">
+            <div class="mx_floating_sc-iAyFgw mx_floating_dIWcMN">
+             
+                <span class="mx_floating_stickycartcount" style="font-weight:bold;">{{ cart.item_count }}</span>
+                
+          
+              <!-- <span class="tax">Tax Included</span> -->
+            </div>
+          </div>
+        </div>
+        <a class="mx_custome_underline openDrawer openPopup mxopenCartPage">
+          <svg class="qsc2-svg-icon qsc2-svg--cart-icon-bag-1 qsc2-svg-icon--md qsc2-stickybtn__icon" 
+               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 6h-4V5a4 4 0 0 0-8 0v1H4a1 1 0 0 0-1 1v13a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V7a1 1 0 0 0-1-1ZM9 5a3 3 0 1 1 6 0v1H9V5Zm11 15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8h16v12Z"/>
+          </svg>
+        </a>
+        
+      </div>
+      <div class="mx_floating_price">
+        <span class="mx_floating_stickycartprice">
+          {{- cart.items_subtotal_price | money_with_currency -}}
+        </span>
+      </div>
+    </div>
+  {% endif %}
+
+  {% endif %} {% endcomment %}
+
 
 
 
@@ -110,55 +220,45 @@ bottom:0%}
   const totalprice = document.querySelector('.mx_floating_stickycartprice');
   const showCart = document.querySelector('.mx_floating_mx_show_cart');
   const floating_btn = document.querySelector('.mx_floating_elpySv ');
-
-
-  // click open Cart page Drawer  functionality //
-  function openCartPage() {
+//function open cartlink
+  function clickCartLink() {
     // Get the custom selector from Shopify settings
-    let cartSelector = "{{ block.settings.view_cart_Page }}".trim();
-  
-    // Log the selector to check if it's correct
-    console.log("Cart selector:", cartSelector);
-    
-    // Use the cartSelector along with other fallback selectors
-    let cartIcon = document.querySelector(
-      '.header__icon--cart, .site-header__cart, .cart-link, .cart-toggle, .cart-icon, .cart-button'
-    );
-  
-    // Ensure cartIcon exists and is not hidden before clicking
-    if (cartIcon) {
-      cartIcon.click();
-    } 
-    // Check if cartSelector is valid and query the element
+
+    let cartSelector = '{{ block.settings.view_cart_Page }}'.trim();
+    // Find the anchor element with href="/cart"
+    const cartLink = document.querySelector('a[href="/cart"]');
+
+    // Check if the element exists
+    if (cartLink) {
+      // Click the element
+      cartLink.click();
+    } // Check if cartSelector is valid and query the element
     else if (cartSelector) {
       let customCartIcon = document.querySelector(cartSelector);
       if (customCartIcon) {
         customCartIcon.click();
       }
-     } else {
-        // If no element with the custom selector exists, redirect to the cart page
-        window.location.href = '/cart';
-      
-    } 
-   
+    } else {
+      // If no element with the custom selector exists, redirect to the cart page
+      window.location.href = '/cart';
+    }
   }
 
-// Attach the function to the "Add to Cart" button
-const addToCartButton = document.querySelector('.mxopenCartPage'); // Replace with the actual button selector
-if (addToCartButton) {
-  addToCartButton.addEventListener('click', openCartPage);
-}
+  // Attach the function to the "Add to Cart" button
+  {% comment %} const addToCartButton = document.querySelector('.mxopenCartPage'); // Replace with the actual button selector
+  if (addToCartButton) {
+    addToCartButton.addEventListener('click', clickCartLink);
+  } {% endcomment %}
 
-
-//end cart open functionality //
+  //end cart open functionality //
 
   function updateCartCount() {
     fetch('/cart.js')
       .then((response) => response.json())
       .then((cart) => {
         const cartCount = cart.item_count;
-        const totalAmount = cart.items_subtotal_price  ;
-       const currencyMapping = {
+        const totalAmount = cart.items_subtotal_price;
+        const currencyMapping = {
           AED: 'ar-AE',
           AFN: 'fa-AF',
           ALL: 'sq-AL',
@@ -319,9 +419,9 @@ if (addToCartButton) {
           YER: 'ar-YE',
           ZAR: 'en-ZA',
           ZMW: 'en-ZM',
-          ZWL: 'en-ZW'
+          ZWL: 'en-ZW',
         };
-        
+
         // Example: A function to format a number using the mapping:
         function formatCurrency(amount, currency) {
           const locale = currencyMapping[currency] || 'en-IN'; // Default if currency code not found
@@ -332,28 +432,23 @@ if (addToCartButton) {
           }
         }
 
-        const currentCurrency= Shopify.currency.active; 
-    
-        
-        console.log(currentCurrency + " store currency");
-console.log(cartCount +"cart" )
-        if(cartCount > 0 ) {
-          floating_btn.classList.add('activeCompareBar');    
-      }
-      else{
-        floating_btn.classList.remove('activeCompareBar');
-      }
+        const currentCurrency = Shopify.currency.active;
+
+        console.log(currentCurrency + ' store currency');
+        console.log(cartCount + 'cart');
+        if (cartCount > 0) {
+          floating_btn.classList.add('activeCompareBar');
+        } else {
+          floating_btn.classList.remove('activeCompareBar');
+        }
         if (addItmes && totalprice) {
           addItmes.textContent = cartCount;
-      
-          totalprice.textContent = (formatCurrency(totalAmount/100, currentCurrency));
 
-    
+          totalprice.textContent = formatCurrency(totalAmount / 100, currentCurrency);
         }
       })
       .catch((error) => console.error('Error fetching cart data:', error));
   }
- 
 
   if (addItmes) {
     console.log(addItmes + 'sdfghjk');
@@ -426,6 +521,7 @@ console.log(cartCount +"cart" )
   "name": "Floating Cart Button",
   "target": "body",
   "settings": [
+ 
     {
       "type": "checkbox",
       "id": "floating_cart_box_",
@@ -434,14 +530,20 @@ console.log(cartCount +"cart" )
     },
     {
       "type": "color",
+      "id": "Wrapper_bg_color",
+      "label": "Wrapper Button Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
       "id": "bg_color",
-      "label": "Floating Background Color",
+      "label": "Floating Button Background Color",
       "default": "#000000"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Floating Text Color",
+      "label": "Floating Button Text Color",
       "default": "#ffffff"
     },
     {
@@ -449,7 +551,6 @@ console.log(cartCount +"cart" )
       "id": "view_cart_Page",
       "label": "Unique ID or class to open cart on 'View Cart' click"
     }
-    
   ]
 }
 {% endschema %}

@@ -162,7 +162,7 @@ export default function HomePage() {
     height: 90,
 
     topBarSource:
-      `https://cdn.shopify.com/s/files/1/0571/4372/2059/files/MeroxIO.png?v=1734519087`,
+      `https://cdn.shopify.com/s/files/1/0908/8562/0025/files/MeroxIO_Comparison_Slider_2.png?v=1738650835`,
     url: '/',
     accessibilityLabel: 'https://cdn.shopify.com/s/files/1/0571/4372/2059/files/MeroxIO.png?v=1734519087',
 
@@ -220,15 +220,14 @@ export default function HomePage() {
           <Layout.Section>
             <div className="custom-callout-container">
               <CalloutCard
-                title="Activate Move To Wishlist"
+                title="Activate Floating Cart Button"
                 illustration="https://cdn.shopify.com/s/assets/admin/checkout/settings-customizecart-705f57c725ac05be5a34ec20c05b94298cb8afd10aac7bd9c7ad02030f48cfa0.svg"
                 primaryAction={{ content: 'Activate Now ➡️', onAction: openThemeEditor, accessibilityLabel: 'Enable Now - Premium Plan' }}
                 // secondaryAction={{content: 'Activate Now - Free Plan ➡️', onAction: enableFreePlan, accessibilityLabel: 'Enable Now - Free Plan'}}
               >
-                <p>
-                Are you prepared to upgrade your store's display? Click 'Enable' to activate the Move To Wishlist. Once active, effortlessly adjust settings and tailor the app to complement your store's aesthetic. Enhance your customers' viewing experience now!
-                <br/><b>NOTE: Make sure you have subscribed to Premium if you Activate the Premium Plan.</b>
-                </p>
+          <p>
+       Ready to enhance your store's cart experience? Click 'Enable' to activate the Floating Cart Button. Once enabled, customize the settings to match your store's design and provide a seamless shopping experience for your mobile customers. Make checkout easier and more accessible today!
+          </p>
               </CalloutCard>
             </div>
           </Layout.Section>
@@ -237,17 +236,18 @@ export default function HomePage() {
             <TextContainer>
               <DisplayText size="Large"><span>Introduction</span></DisplayText>
 
-              <p>Welcome to Move To Wishlist by MeroxIO! – Redefine the way customers shop and save their favorite products. Elevate your Shopify store with Wishlist – where convenience meets engagement. Create a shopping experience your customers will love and keep them coming back for more!</p>
+              <p>🚀 Welcome to Floating Cart Button by MeroxIO! Transform your Shopify store with a seamless, intuitive, and mobile-friendly cart experience. Our smart floating cart button ensures effortless shopping by providing real-time cart updates, instant access, and automatic currency adaptation. Elevate your store’s engagement and boost conversions today!</p>
 
               <h2><b>Key Features:</b></h2>
               <ul className="appFeatures">
-                <li><strong>Effortless Wishlist Management:</strong> Provide your customers with an easy-to-use wishlist feature that enhances their shopping experience.</li>
-                <li><strong>Mobile Drawer:</strong> Enjoy a sleek and responsive wishlist drawer for mobile, ensuring seamless navigation and accessibility.</li>
-                <li><strong>Floating Icon:</strong> A customizable floating icon allows customers to access their wishlist anytime, anywhere on your store.</li>
-                <li><strong>Wishlist Integration Everywhere:</strong> Enable wishlist functionality across product pages, product grids, and other key sections of your store.</li>
-                <li><strong>Move to Wishlist from Cart:</strong> Give customers the ability to move items from their cart to their wishlist, simplifying decision-making and saving favorites.</li>
-                <li><strong>Dedicated Wishlist Page:</strong> Feature a beautifully designed wishlist page where customers can add items to their cart with variants or remove items as needed.</li>
-                <li><strong>Enhanced Shopping Journey:</strong> Encourage repeat visits and customer loyalty with a wishlist that fits perfectly into your store’s user experience.</li>
+                <li><strong>✅ Live Cart Updates – </strong> Display total cart quantity in real-time for a transparent shopping experience.</li>
+                <li><strong>✅ Quick Cart Access – </strong> Instantly open the cart drawer or cart page with just a tap.</li>
+                <li><strong>✅ Mobile-Optimized –</strong>Designed exclusively for mobile users to enhance usability.</li>
+                <li><strong>✅ Automatic Currency Adaptation –</strong> Ensures a smooth shopping experience for global customers.</li>
+                <li><strong>✅ User-Friendly & Engaging – </strong> Keeps customers focused on shopping without friction.
+                </li>
+                <li><strong>✅ Direct Quantity & Price Display -</strong> nstantly show total cart quantity and price, saving time for customers. </li>
+               
               </ul>
 
 
@@ -266,7 +266,7 @@ export default function HomePage() {
                 <Modal.Section>
                   <div>
 
-                    <div style={{ padding: '56% 0 0 0', position: 'relative' }}><iframe src="https://cdn.shopify.com/videos/c/o/v/879c7b0f313e4e858abc5c16733670d3.mp4" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }} title="Quick Setup"></iframe></div>
+                    <div style={{ padding: '56% 0 0 0', position: 'relative' }}><iframe src="https://cdn.shopify.com/videos/c/o/v/d7060f8e052243f1a404e3c8562c7803.mp4" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }} title="Quick Setup"></iframe></div>
                   </div>
                 </Modal.Section>
               </Modal>
@@ -289,7 +289,7 @@ export default function HomePage() {
             <Card>
               <div className="videoWrapper" style={{ backgroundImage: `url(${shopifyBackground})`, padding: '22px' }}>
               <video
-                  src="https://cdn.shopify.com/videos/c/o/v/d332700012ee4a1fa2a9e5fafe2c293f.mp4"
+                  src="https://cdn.shopify.com/videos/c/o/v/9f176878242244b5a824915f62f4087b.mp4"
                   controls
                   autoPlay
                   loop
@@ -307,7 +307,7 @@ export default function HomePage() {
           <Layout.Section>
 
 
-
+{/* 
             <div className="planComparison">
               <Card title="Plan Comparison" sectioned
 
@@ -345,11 +345,11 @@ export default function HomePage() {
                   hoverable
                 />
               </Card>
-            </div>
+            </div> */}
           </Layout.Section>
 
           <Layout.Section>
-          <ActiveSubscription />
+          {/* <ActiveSubscription /> */}
         </Layout.Section>
 
           <Layout.Section>
