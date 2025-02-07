@@ -71,9 +71,9 @@ export default function HomePage() {
   });
 
   const template = 'index'; // Replace with your actual template value
-  const uuid = '034c80a8-690a-411d-b205-8a6380c5a10d'; // Replace with your actual UUID
-  const handlePaid = 'wishlist_app_embed'; // Replace with your actual handle
-  const handleFree = 'meroxio_sticky_mobile_free';
+  const uuid = '7751c9cb-c4cf-40af-8a2a-a2ca7ea0a3b0'; // Replace with your actual UUID
+  const handlePaid = 'floating-button'; // Replace with your actual handle
+  const handleFree = 'floating-button';
   const reviewUrl = "https://apps.shopify.com/meroxio-comparison-slider#modal-show=WriteReviewModal"
 
 
