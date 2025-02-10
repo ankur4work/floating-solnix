@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "53b3349f658a984d34a17c22ac334e19"
-application_url = "https://invasion-folk-compound-attending.trycloudflare.com"
+application_url = "https://pr-leslie-spanish-tourist.trycloudflare.com"
 embedded = true
 name = "ankit kumar dev app"
 handle = "ankit-kumar-dev-app"
@@ -15,9 +15,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://invasion-folk-compound-attending.trycloudflare.com/auth/callback",
-  "https://invasion-folk-compound-attending.trycloudflare.com/auth/shopify/callback",
-  "https://invasion-folk-compound-attending.trycloudflare.com/api/auth/callback"
+  "https://pr-leslie-spanish-tourist.trycloudflare.com/auth/callback",
+  "https://pr-leslie-spanish-tourist.trycloudflare.com/auth/shopify/callback",
+  "https://pr-leslie-spanish-tourist.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

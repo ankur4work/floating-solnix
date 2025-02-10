@@ -1,206 +1,218 @@
-{% comment %} {% if block.settings.selectDesign == "design1" %} {% endcomment %}
-
-<style>
-
-   @media(min-width:769px){
-      .mx_floating_elpySv{
-  display:none;}
-  }
-      .mx_floating_elpySv {
-            position: fixed;
-            bottom: -100%;
-            left: 0px;
-            z-index: 999;
-            background: {{block.settings.Wrapper_bg_color}};
-            width: 100%;
-            padding: 8px 16px;
-            height: 72px;
-        }
-
-        .mx_floating_viewcart-box {
-            display: flex;
-           -webkit-box-pack: justify;
-            justify-content: space-between;
-            -webkit-box-align: center;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: 400;
-            line-height: 1.2em;
-            letter-spacing: 0px;
-            padding: 2px 5px;
-            width: 100%;
-            background-color:{{ block.settings.bg_color }};
-            color: {{ block.settings.text_color }};
-            border-radius: 8px;
-            height: 56px;
-        }
-
-    .mx_floating_elpySv .mx_floating_flexview {
-        display: flex
-    ;
-        -webkit-box-align: center;
-        align-items: center;
-        gap:10px;
-    }
-
-    .mx_floating_bdcKJE {
-        font-size: 14px;
-        font-weight: 600;
-        border: none;
-        background: none;
-        color:{{ block.settings.text_color }};
-    }
-    .mx_floating_price{
-    color:{{ block.settings.text_color }};
-
-    }
-    .mx_custome_underline{
-    text-decoration:none;
-  cursor:pointer;}
-    .mx_floating_cartIcons svg path{
-  fill:{{ block.settings.text_color }}}
-  .mx_custom_show{
-      display:block;
-  }
-  .mx_custom_hide{
-      display:none;
-  }
-  .activeCompareBar{
-  bottom:0%}
-</style>
-
-
-
-
-
-{% if block.settings.floating_cart_box_ %}
-  <div class="mx_floating_sc-hSdWYo mx_floating_elpySv mx_floating_btn   ">
-    <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
-      <div class="mx_floating_flexview">
-        <div class="mx_floating_cartIcons">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M2.39999 2.24274C1.98578 2.24274 1.64999 2.57852 1.64999 2.99274C1.64999 3.40695 1.98578 3.74274 2.39999 3.74274V2.24274ZM4.69253 2.99274L5.41645 2.79668C5.32791 2.46975 5.03124 2.24274 4.69253 2.24274V2.99274ZM8.4179 16.748L7.69398 16.944C7.79169 17.3048 8.14008 17.5385 8.51093 17.4922L8.4179 16.748ZM19.8806 15.3151L19.9736 16.0593C20.2921 16.0195 20.55 15.7814 20.615 15.4671L19.8806 15.3151ZM21.6 7.00468L22.3344 7.15663C22.3801 6.93575 22.324 6.70602 22.1816 6.53111C22.0391 6.3562 21.8256 6.25468 21.6 6.25468V7.00468ZM5.7791 7.00468L5.05518 7.20074L5.7791 7.00468ZM2.39999 3.74274H4.69253V2.24274H2.39999V3.74274ZM8.51093 17.4922L19.9736 16.0593L19.7876 14.5709L8.32488 16.0038L8.51093 17.4922ZM20.615 15.4671L22.3344 7.15663L20.8655 6.85272L19.1461 15.1632L20.615 15.4671ZM3.96861 3.1888L5.05518 7.20074L6.50302 6.80862L5.41645 2.79668L3.96861 3.1888ZM5.05518 7.20074L7.69398 16.944L9.14182 16.5519L6.50302 6.80862L5.05518 7.20074ZM21.6 6.25468H5.7791V7.75468H21.6V6.25468ZM11.25 20.5C11.25 20.9142 10.9142 21.25 10.5 21.25V22.75C11.7426 22.75 12.75 21.7427 12.75 20.5H11.25ZM10.5 21.25C10.0858 21.25 9.74999 20.9142 9.74999 20.5H8.24999C8.24999 21.7427 9.25735 22.75 10.5 22.75V21.25ZM9.74999 20.5C9.74999 20.0858 10.0858 19.75 10.5 19.75V18.25C9.25735 18.25 8.24999 19.2574 8.24999 20.5H9.74999ZM10.5 19.75C10.9142 19.75 11.25 20.0858 11.25 20.5H12.75C12.75 19.2574 11.7426 18.25 10.5 18.25V19.75ZM19.25 20.5C19.25 20.9142 18.9142 21.25 18.5 21.25V22.75C19.7426 22.75 20.75 21.7427 20.75 20.5H19.25ZM18.5 21.25C18.0858 21.25 17.75 20.9142 17.75 20.5H16.25C16.25 21.7427 17.2574 22.75 18.5 22.75V21.25ZM17.75 20.5C17.75 20.0858 18.0858 19.75 18.5 19.75V18.25C17.2574 18.25 16.25 19.2574 16.25 20.5H17.75ZM18.5 19.75C18.9142 19.75 19.25 20.0858 19.25 20.5H20.75C20.75 19.2574 19.7426 18.25 18.5 18.25V19.75Z" ></path>
-          </svg>
-        </div>
-        <div class="mx_floating_cartData">
-          <div class="mx_floating_sc-iAyFgw mx_floating_dIWcMN">
-            <div>
-              <span class="mx_floating_stickycartcount" style="font-weight:bold;">{{ cart.item_count }}</span>
-              <span class="mx_floating_stickycartcounttext">{{ 'ratings.defaultProperty.show' | t }}</span>
-
-
-
-            </div>
-            <div class="mx_floating_price">
-              <span class="mx_floating_stickycartprice" style="font-weight:bold;">
-                {{- cart.items_subtotal_price | money_with_currency -}}
-              </span>
-            </div>
-            <!-- <span class="tax">Tax Included</span> -->
-          </div>
-        </div>
-      </div>
-      <a class="mx_custome_underline openDrawer openPopup mxopenCartPage" id="">
-        <button class="mx_floating_sc-eHgmQL mx_floating_bdcKJE mx_floating_flexview mx_floating_mx_show_cart">
-          <div style="display: flex; cursor:pointer; justify-content: center; align-items: center;">{{ 'ratings.defaultProperty.cart' | t }}</div>
-        </button>
-      </a>
-    </div>
-  </div>
-{% endif %}
-{% comment %} {% endif %} {% endcomment %}
-
-{% comment %} {% if block.settings.selectDesign == "design2" %}
-
+{% if block.settings.selectDesign == 'design1' %}
   <style>
-    .mx_floating_sc-hSdWYo {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-      width: 60px;
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      z-index: 999;
+     @media(min-width:769px){
+        .mx_floating_elpySv{
+    display:none;}
     }
-    
-    .mx_custome_underline svg {
-      width: 24px;
-      height: 24px;
-      fill: black;
-    }
-    
-    .mx_floating_stickycartcount {
-      position: absolute;
-      top: -22px;
-      right: -22px;
-  
-      background: #e74c3c;
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-      
-      width: 20px; /* Ensures a perfect circle */
-      height: 20px; /* Ensures a perfect circle */
-      line-height: 20px; /* Centers text inside */
-      border-radius: 50%; /* Makes it a circle */
-      
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      
-      text-align: center;
-    }
-    
-    .mx_floating_viewcart-box {
-      position: relative;
-    }
-    
-    .mx_floating_price {
-      position: absolute;
-      bottom: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 4px 4px;
-      border-radius: 12px;
-      font-size: 9px;
-      font-weight: bold;
-      color: #000;
-      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
-  
-    }
-    
+        .mx_floating_elpySv {
+              position: fixed;
+              bottom: -100%;
+              left: 0px;
+              z-index: 999;
+              background: {{block.settings.Wrapper_bg_color}};
+              width: 100%;
+              padding: 8px 16px;
+              height: 72px;
+          }
 
+          .mx_floating_viewcart-box {
+              display: flex;
+             -webkit-box-pack: justify;
+              justify-content: space-between;
+              -webkit-box-align: center;
+              align-items: center;
+              font-size: 1.2rem;
+              font-weight: 400;
+              line-height: 1.2em;
+              letter-spacing: 0px;
+              padding: 2px 5px;
+              width: 100%;
+              background-color:{{ block.settings.bg_color }};
+              color: {{ block.settings.text_color }};
+              border-radius: 8px;
+              height: 56px;
+          }
+
+      .mx_floating_elpySv .mx_floating_flexview {
+          display: flex
+      ;
+          -webkit-box-align: center;
+          align-items: center;
+          gap:10px;
+      }
+
+      .mx_floating_bdcKJE {
+          font-size: 14px;
+          font-weight: 600;
+          border: none;
+          background: none;
+          color:{{ block.settings.text_color }};
+      }
+      .mx_floating_price{
+      color:{{ block.settings.text_color }};
+
+      }
+      .mx_custome_underline{
+      text-decoration:none;
+    cursor:pointer;}
+      .mx_floating_cartIcons svg path{
+    fill:{{ block.settings.text_color }}}
+    .mx_custom_show{
+        display:block;
+    }
+    .mx_custom_hide{
+        display:none;
+    }
+    .activeCompareBar{
+    bottom:0%}
   </style>
 
   {% if block.settings.floating_cart_box_ %}
     <div class="mx_floating_sc-hSdWYo mx_floating_elpySv mx_floating_btn   ">
-      <div class="mx_floating_viewcart-box">
+      <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
         <div class="mx_floating_flexview">
-      
+          <div class="mx_floating_cartIcons">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M2.39999 2.24274C1.98578 2.24274 1.64999 2.57852 1.64999 2.99274C1.64999 3.40695 1.98578 3.74274 2.39999 3.74274V2.24274ZM4.69253 2.99274L5.41645 2.79668C5.32791 2.46975 5.03124 2.24274 4.69253 2.24274V2.99274ZM8.4179 16.748L7.69398 16.944C7.79169 17.3048 8.14008 17.5385 8.51093 17.4922L8.4179 16.748ZM19.8806 15.3151L19.9736 16.0593C20.2921 16.0195 20.55 15.7814 20.615 15.4671L19.8806 15.3151ZM21.6 7.00468L22.3344 7.15663C22.3801 6.93575 22.324 6.70602 22.1816 6.53111C22.0391 6.3562 21.8256 6.25468 21.6 6.25468V7.00468ZM5.7791 7.00468L5.05518 7.20074L5.7791 7.00468ZM2.39999 3.74274H4.69253V2.24274H2.39999V3.74274ZM8.51093 17.4922L19.9736 16.0593L19.7876 14.5709L8.32488 16.0038L8.51093 17.4922ZM20.615 15.4671L22.3344 7.15663L20.8655 6.85272L19.1461 15.1632L20.615 15.4671ZM3.96861 3.1888L5.05518 7.20074L6.50302 6.80862L5.41645 2.79668L3.96861 3.1888ZM5.05518 7.20074L7.69398 16.944L9.14182 16.5519L6.50302 6.80862L5.05518 7.20074ZM21.6 6.25468H5.7791V7.75468H21.6V6.25468ZM11.25 20.5C11.25 20.9142 10.9142 21.25 10.5 21.25V22.75C11.7426 22.75 12.75 21.7427 12.75 20.5H11.25ZM10.5 21.25C10.0858 21.25 9.74999 20.9142 9.74999 20.5H8.24999C8.24999 21.7427 9.25735 22.75 10.5 22.75V21.25ZM9.74999 20.5C9.74999 20.0858 10.0858 19.75 10.5 19.75V18.25C9.25735 18.25 8.24999 19.2574 8.24999 20.5H9.74999ZM10.5 19.75C10.9142 19.75 11.25 20.0858 11.25 20.5H12.75C12.75 19.2574 11.7426 18.25 10.5 18.25V19.75ZM19.25 20.5C19.25 20.9142 18.9142 21.25 18.5 21.25V22.75C19.7426 22.75 20.75 21.7427 20.75 20.5H19.25ZM18.5 21.25C18.0858 21.25 17.75 20.9142 17.75 20.5H16.25C16.25 21.7427 17.2574 22.75 18.5 22.75V21.25ZM17.75 20.5C17.75 20.0858 18.0858 19.75 18.5 19.75V18.25C17.2574 18.25 16.25 19.2574 16.25 20.5H17.75ZM18.5 19.75C18.9142 19.75 19.25 20.0858 19.25 20.5H20.75C20.75 19.2574 19.7426 18.25 18.5 18.25V19.75Z" ></path>
+            </svg>
+          </div>
           <div class="mx_floating_cartData">
             <div class="mx_floating_sc-iAyFgw mx_floating_dIWcMN">
-             
+              <div>
                 <span class="mx_floating_stickycartcount" style="font-weight:bold;">{{ cart.item_count }}</span>
-                
-          
+                <span class="mx_floating_stickycartcounttext">{{ 'ratings.defaultProperty.show' | t }}</span>
+              </div>
+              <div class="mx_floating_price">
+                <span class="mx_floating_stickycartprice" style="font-weight:bold;">
+                  {{- cart.items_subtotal_price | money_with_currency -}}
+                </span>
+              </div>
+              <!-- <span class="tax">Tax Included</span> -->
+            </div>
+          </div>
+        </div>
+        <a class="mx_custome_underline openDrawer openPopup mxopenCartPage" id="">
+          <button class="mx_floating_sc-eHgmQL mx_floating_bdcKJE mx_floating_flexview mx_floating_mx_show_cart">
+            <div style="display: flex; cursor:pointer; justify-content: center; align-items: center;">
+              {{ 'ratings.defaultProperty.cart' | t }}
+            </div>
+          </button>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+
+{% if block.settings.selectDesign == 'design2' %}
+  <style>
+        .mx_floating_elpySv {
+          position: fixed;
+          bottom: -2000px;
+          right: 20px;
+          background: {{block.settings.Wrapper_bg_color}};
+          border-radius: 50%;
+
+          width: 60px;
+          height: 60px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          z-index: 999;
+          transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Initial shadow */
+        }
+
+        .mx_floating_elpySv:hover {
+          transform: scale(1.1);
+          box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        }
+
+        .mx_custome_underline svg {
+          width: 34px;
+          height: 34px;
+          fill: black;
+        }
+
+        .mx_floating_stickycartcount {
+          position: absolute;
+          top: -20px;
+          right: -18px;
+
+          background:{{ block.settings.bg_color }};
+          color: {{ block.settings.text_color }};
+          font-size: 12px;
+          font-weight: bold;
+
+          width: 20px; /* Ensures a perfect circle */
+          height: 20px; /* Ensures a perfect circle */
+          line-height: 20px; /* Centers text inside */
+          border-radius: 50%; /* Makes it a circle */
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          text-align: center;
+        }
+
+        .mx_floating_viewcart-box {
+          position: relative;
+        }
+
+        .mx_floating_price {
+          position: absolute;
+          bottom: -21px;
+          left: 50%;
+          transform: translateX(-50%);
+          background:{{ block.settings.bg_color }};
+          color: {{ block.settings.text_color }};
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-size: 10px;
+          font-weight: bold;
+
+          box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+
+
+        }
+
+
+        .mx_custom_show{
+          display:block;
+      }
+
+      .activeCompareBar{
+      bottom:10%
+    }
+    {% comment %} @media(min-width:769px){
+      .mx_floating_elpySv{
+    display:none;}
+    }
+      {% endcomment %}
+  </style>
+
+  {% if block.settings.floating_cart_box_ %}
+    <div class="mx_floating_sc-hSdWYo mx_floating_elpySv  mx_floating_btn " onclick="clickCartLink()">
+      <div class="mx_floating_viewcart-box">
+        <div class="mx_floating_flexview">
+          <div class="mx_floating_cartData">
+            <div class="mx_floating_sc-iAyFgw mx_floating_dIWcMN">
+              <span class="mx_floating_stickycartcount" style="font-weight:bold;">{{ cart.item_count }}</span>
+
               <!-- <span class="tax">Tax Included</span> -->
             </div>
           </div>
         </div>
         <a class="mx_custome_underline openDrawer openPopup mxopenCartPage">
-          <svg class="qsc2-svg-icon qsc2-svg--cart-icon-bag-1 qsc2-svg-icon--md qsc2-stickybtn__icon" 
-               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <svg
+            class="qsc2-svg-icon qsc2-svg--cart-icon-bag-1 qsc2-svg-icon--md qsc2-stickybtn__icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
             <path d="M20 6h-4V5a4 4 0 0 0-8 0v1H4a1 1 0 0 0-1 1v13a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V7a1 1 0 0 0-1-1ZM9 5a3 3 0 1 1 6 0v1H9V5Zm11 15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8h16v12Z"/>
           </svg>
         </a>
-        
       </div>
       <div class="mx_floating_price">
         <span class="mx_floating_stickycartprice">
@@ -209,17 +221,14 @@
       </div>
     </div>
   {% endif %}
-
-  {% endif %} {% endcomment %}
-
-
-
+{% endif %}
 
 <script>
   const addItmes = document.querySelector('.mx_floating_stickycartcount');
   const totalprice = document.querySelector('.mx_floating_stickycartprice');
   const showCart = document.querySelector('.mx_floating_mx_show_cart');
   const floating_btn = document.querySelector('.mx_floating_elpySv ');
+  const showHideInterval= document.querySelector(' .mx_floating_price ')
 //function open cartlink
   function clickCartLink() {
     // Get the custom selector from Shopify settings
@@ -433,6 +442,7 @@
         }
 
         const currentCurrency = Shopify.currency.active;
+        
 
         console.log(currentCurrency + ' store currency');
         console.log(cartCount + 'cart');
@@ -446,6 +456,20 @@
 
           totalprice.textContent = formatCurrency(totalAmount / 100, currentCurrency);
         }
+
+           // Add .mx_custam_show class to showHideInterval
+     {% comment %} if (showHideInterval) {
+        showHideInterval.classList.add('mx_custom_show');
+
+        // Remove the class after 2 seconds
+        setTimeout(() => {
+          showHideInterval.classList.remove('mx_custom_show');
+        }, 6000);
+      }  {% endcomment %}
+
+
+
+
       })
       .catch((error) => console.error('Error fetching cart data:', error));
   }
@@ -521,7 +545,23 @@
   "name": "Floating Cart Button",
   "target": "body",
   "settings": [
- 
+    {
+      "type": "select",
+      "id": "selectDesign",
+      "label": "Select Design",
+      "options": [
+        {
+          "value": "design1",
+          "label": "Design 1"
+        },
+        {
+          "value": "design2",
+          "label": "Design 2"
+        }
+      ],
+      "default": "design1"
+    },
+
     {
       "type": "checkbox",
       "id": "floating_cart_box_",
