@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "bfb95502aa8f4f718b14d09136fef838"
-application_url = "https://decent-penalties-appearance-seemed.trycloudflare.com"
+application_url = "https://triple-journey-horn-quad.trycloudflare.com"
 embedded = true
 name = "Staging"
 handle = "staging-76"
@@ -15,18 +15,18 @@ api_version = "2022-10"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = ""
+scopes = "write_cart_transforms,write_draft_orders,write_products"
 use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://decent-penalties-appearance-seemed.trycloudflare.com/auth/callback",
-  "https://decent-penalties-appearance-seemed.trycloudflare.com/auth/shopify/callback",
-  "https://decent-penalties-appearance-seemed.trycloudflare.com/api/auth/callback"
+  "https://triple-journey-horn-quad.trycloudflare.com/auth/callback",
+  "https://triple-journey-horn-quad.trycloudflare.com/auth/shopify/callback",
+  "https://triple-journey-horn-quad.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://decent-penalties-appearance-seemed.trycloudflare.com/api/meroxio-proxy"
+url = "https://triple-journey-horn-quad.trycloudflare.com/api/meroxio-proxy"
 subpath = "meroxio-proxy"
 prefix = "apps"
 
