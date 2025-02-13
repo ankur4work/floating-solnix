@@ -129,9 +129,10 @@
         }
 
         .mx_custome_underline svg {
-          width: 34px;
-          height: 34px;
-          fill: black;
+          width: 24px;
+          height: 24px;
+          cursor:pointer;
+     
         }
 
         .mx_floating_stickycartcount {
@@ -176,6 +177,9 @@
 
 
         }
+        .mx_floating_viewcart-box a {
+        cursor:pointer !important;
+      }
 
 
         .mx_custom_show{
@@ -207,11 +211,7 @@
         <a class="mx_custome_underline openDrawer openPopup mxopenCartPage">
           <svg
             class="qsc2-svg-icon qsc2-svg--cart-icon-bag-1 qsc2-svg-icon--md qsc2-stickybtn__icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <path d="M20 6h-4V5a4 4 0 0 0-8 0v1H4a1 1 0 0 0-1 1v13a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V7a1 1 0 0 0-1-1ZM9 5a3 3 0 1 1 6 0v1H9V5Zm11 15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8h16v12Z"/>
-          </svg>
+           aria-hidden="true" fill="none" focusable="false"  viewBox="0 0 24 24"><path d="M4.75 8.25A.75.75 0 0 0 4 9L3 19.125c0 1.418 1.207 2.625 2.625 2.625h12.75c1.418 0 2.625-1.149 2.625-2.566L20 9a.75.75 0 0 0-.75-.75H4.75Zm2.75 0v-1.5a4.5 4.5 0 0 1 4.5-4.5v0a4.5 4.5 0 0 1 4.5 4.5v1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </a>
       </div>
       <div class="mx_floating_price">
@@ -546,17 +546,21 @@
   "target": "body",
   "settings": [
     {
+      "type": "header",
+      "content": "Apps Settings"
+    },
+    {
       "type": "select",
       "id": "selectDesign",
       "label": "Select Design",
       "options": [
         {
           "value": "design1",
-          "label": "Design 1"
+          "label": "Bar"
         },
         {
           "value": "design2",
-          "label": "Design 2"
+          "label": "Button"
         }
       ],
       "default": "design1"
@@ -587,9 +591,16 @@
       "default": "#ffffff"
     },
     {
+      "type": "header",
+      "content": "Additional Apps Settings",
+      "info": "If the cart drawer does not open, set a unique ID or class manually (e.g., #cart or .open-cart)."
+
+    },
+    {
       "type": "text",
       "id": "view_cart_Page",
-      "label": "Unique ID or class to open cart on 'View Cart' click"
+      "label": "Unique ID or class to open cart on 'View Cart' click",
+      "default": ".cart-drawer-toggle"
     }
   ]
 }
