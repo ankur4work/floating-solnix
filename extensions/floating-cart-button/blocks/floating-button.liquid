@@ -1,13 +1,9 @@
 {% if block.settings.selectDesign == 'design1' %}
   <style>
-     @media(min-width:769px){
-        .mx_floating_elpySv{
-    display:none;}
-    }
+  
         .mx_floating_elpySv {
               position: fixed;
               bottom: -100%;
-              left: 0px;
               z-index: 999;
               background: {{block.settings.Wrapper_bg_color}};
               width: 100%;
@@ -65,9 +61,24 @@
     }
     .activeCompareBar{
     bottom:0%}
+    @media(max-width:769px){
+      .mx_floating_elpySv{
+    left: 0px;
+
+    }
+  }
+    @media(min-width:769px){
+      .mx_floating_elpySv{
+        max-width: 200px;
+        right: 2px;
+        background:transparent;
+}
+  }
   </style>
 
   {% if block.settings.floating_cart_box_ %}
+    {% if block.settings. desktop_show_cart_box_ %}
+   
     <div class="mx_floating_sc-hSdWYo mx_floating_elpySv mx_floating_btn   ">
       <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
         <div class="mx_floating_flexview">
@@ -101,6 +112,8 @@
       </div>
     </div>
   {% endif %}
+{% endif %}
+ 
 {% endif %}
 
 {% if block.settings.selectDesign == 'design2' %}
@@ -197,6 +210,7 @@
   </style>
 
   {% if block.settings.floating_cart_box_ %}
+    {% if block.settings. desktop_show_cart_box_ %}
     <div class="mx_floating_sc-hSdWYo mx_floating_elpySv  mx_floating_btn " onclick="clickCartLink()">
       <div class="mx_floating_viewcart-box">
         <div class="mx_floating_flexview">
@@ -221,6 +235,7 @@
       </div>
     </div>
   {% endif %}
+{% endif %}
 {% endif %}
 
 <script>
@@ -570,6 +585,12 @@
       "type": "checkbox",
       "id": "floating_cart_box_",
       "label": "Enable Floating Cart",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_show_cart_box_",
+      "label": "Enable Desktop hide/show",
       "default": true
     },
     {
