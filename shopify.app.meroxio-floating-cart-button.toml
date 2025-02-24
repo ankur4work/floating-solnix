@@ -6,9 +6,6 @@ embedded = true
 name = "MeroxIO Floating Cart Button"
 handle = "meroxio-floating-cart-button"
 
-[build]
-include_config_on_deploy = true
-
 [webhooks]
 api_version = "2025-01"
 
@@ -25,3 +22,6 @@ redirect_urls = [
 
 [pos]
 embedded = false
+
+[build]
+include_config_on_deploy = true
