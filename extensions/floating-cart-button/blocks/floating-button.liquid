@@ -1,6 +1,8 @@
+
+
 {% if block.settings.selectDesign == 'design1' %}
   <style>
-  
+
         .mx_floating_elpySv {
               position: fixed;
               bottom: -100%;
@@ -69,16 +71,22 @@
   }
     @media(min-width:769px){
       .mx_floating_elpySv{
-        max-width: 200px;
+        max-width: 220px;
         right: 2px;
         background:transparent;
 }
+.mx_floating_elpySv {
+  {% if block.settings.desktop_show_cart_box_ %}
+    display: block;
+  {% else %}
+    display: none;
+  {% endif %}
+}
   }
-  </style>
 
-  {% if block.settings.floating_cart_box_ %}
-    {% if block.settings. desktop_show_cart_box_ %}
-   
+  
+  </style>
+ 
     <div class="mx_floating_sc-hSdWYo mx_floating_elpySv mx_floating_btn   ">
       <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
         <div class="mx_floating_flexview">
@@ -111,8 +119,7 @@
         </a>
       </div>
     </div>
-  {% endif %}
-{% endif %}
+  
  
 {% endif %}
 
@@ -202,15 +209,17 @@
       .activeCompareBar{
       bottom:10%
     }
-    {% comment %} @media(min-width:769px){
-      .mx_floating_elpySv{
-    display:none;}
-    }
-      {% endcomment %}
+    @media(min-width:769px){
+   .mx_floating_elpySv {
+  {% if block.settings.desktop_show_cart_box_ %}
+    display: flex;
+  {% else %}
+    display: none;
+  {% endif %}
+}
+  }
   </style>
 
-  {% if block.settings.floating_cart_box_ %}
-    {% if block.settings. desktop_show_cart_box_ %}
     <div class="mx_floating_sc-hSdWYo mx_floating_elpySv  mx_floating_btn " onclick="clickCartLink()">
       <div class="mx_floating_viewcart-box">
         <div class="mx_floating_flexview">
@@ -235,8 +244,7 @@
       </div>
     </div>
   {% endif %}
-{% endif %}
-{% endif %}
+
 
 <script>
   const addItmes = document.querySelector('.mx_floating_stickycartcount');
@@ -580,17 +588,10 @@
       ],
       "default": "design1"
     },
-
-    {
-      "type": "checkbox",
-      "id": "floating_cart_box_",
-      "label": "Enable Floating Cart",
-      "default": true
-    },
     {
       "type": "checkbox",
       "id": "desktop_show_cart_box_",
-      "label": "Enable Desktop hide/show",
+      "label": "Enable Desktop Visibility",
       "default": true
     },
     {
