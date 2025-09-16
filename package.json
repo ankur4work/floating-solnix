@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@shopify/app": "^3.58.2",
-    "@shopify/cli": "^3.70.0",
+    "@shopify/cli": "^3.84.1",
     "@shopify/ui-extensions": "2023.10.0",
     "dotenv": "^8.2.0",
     "react-syntax-highlighter": "^15.6.1",

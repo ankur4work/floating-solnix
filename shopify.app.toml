@@ -1,14 +1,10 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "bfb95502aa8f4f718b14d09136fef838"
-application_url = "https://triple-journey-horn-quad.trycloudflare.com"
+application_url = "https://ash-instrument-tribe-victorian.trycloudflare.com"
 embedded = true
 name = "Staging"
 handle = "staging-76"
-
-[build]
-automatically_update_urls_on_dev = true
-dev_store_url = "shivam-development-store.myshopify.com"
 
 [webhooks]
 api_version = "2022-10"
@@ -20,15 +16,19 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://triple-journey-horn-quad.trycloudflare.com/auth/callback",
-  "https://triple-journey-horn-quad.trycloudflare.com/auth/shopify/callback",
-  "https://triple-journey-horn-quad.trycloudflare.com/api/auth/callback"
+  "https://ash-instrument-tribe-victorian.trycloudflare.com/auth/callback",
+  "https://ash-instrument-tribe-victorian.trycloudflare.com/auth/shopify/callback",
+  "https://ash-instrument-tribe-victorian.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://triple-journey-horn-quad.trycloudflare.com/api/meroxio-proxy"
+url = "https://ash-instrument-tribe-victorian.trycloudflare.com/api/meroxio-proxy"
 subpath = "meroxio-proxy"
 prefix = "apps"
 
 [pos]
 embedded = false
+
+[build]
+dev_store_url = "shivam-development-store.myshopify.com"
+automatically_update_urls_on_dev = true
