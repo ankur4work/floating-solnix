@@ -11,9 +11,17 @@ dotenv.config();
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
 const billingConfig = {
-  "MeroxIO Premium": {
+  "MeroxIO Basic": {
     // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
-    amount: 4.49,
+    amount: 10.00,
+    currencyCode: "USD",
+    trialDays: 0,
+    interval: BillingInterval.Every30Days,
+  },
+ 
+  "MeroxIO Premium": {
+    // Added second plan with the same structure, at $99.99 (USD)
+    amount: 100.00,
     currencyCode: "USD",
     trialDays: 7,
     interval: BillingInterval.Every30Days,

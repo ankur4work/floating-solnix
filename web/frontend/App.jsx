@@ -21,6 +21,7 @@ export default function App() {
             <NavigationMenu
               navigationLinks={[
 
+                 { label: "Pricing", destination: "/pricing" }, // ← NEW,
               ]}
             />
             <Routes pages={pages} />
