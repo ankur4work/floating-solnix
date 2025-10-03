@@ -23,7 +23,7 @@ const billingConfig = {
     // Added second plan with the same structure, at $99.99 (USD)
     amount: 100.00,
     currencyCode: "USD",
-    trialDays: 7,
+    trialDays: 0,
     interval: BillingInterval.Every30Days,
   },
 };
