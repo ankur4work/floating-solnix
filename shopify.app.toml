@@ -22,8 +22,8 @@ redirect_urls = [
 ]
 
 [app_proxy]
-url = "https://ash-instrument-tribe-victorian.trycloudflare.com/api/meroxio-proxyyy"
-subpath = "meroxio-proxyyy"
+url = "https://ash-instrument-tribe-victorian.trycloudflare.com/api/floating-cart"
+subpath = "floating-cart"
 prefix = "apps"
 
 [pos]

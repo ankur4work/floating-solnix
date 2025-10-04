@@ -4,26 +4,28 @@
   
 
 .mx_poweredby_meroxio {
-    position: absolute;
+      position: absolute;
     top: -24px;
-    right: 3px;
+    /* right: 3px; */
     font-size: 11px;
-    color: #888;
-    font-weight: 500;
+  
+   
     display: none;
     animation: fadeInOut 2s infinite alternate;
     /* padding-right: 17px; */
-    background: black;
+    background: #cccccc;
     /* margin-right: 10px; */
     padding: 5px 13px;
-    color: white;
+    color: black;
     font-weight: 900;
-    font-size: 14px;
+    font-size: 18px;
     border-radius: 8px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-     display = 'none';
-    visibility = 'hidden';
+   border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px; 
+    width: 100%;
+    text-align: center;
+    left: 0;
+
 }
 
 
@@ -114,7 +116,7 @@
  
     padding: 5px 8px;
  
-    font-size: 11px;
+  
 }
   
 
@@ -134,7 +136,7 @@
     <div class="mx_floating_sc-hSdWYo   mx_desing_Select_1 mx_floating_elpySv mx_floating_btn   " data-shop="{{ shopUrl }}">
 
       <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
-        <div class="mx_poweredby_meroxio">Powered by Meroxio</div>
+        <div class="mx_poweredby_meroxio">Free plan</div>
 
         <div class="mx_floating_flexview">
           <div class="mx_floating_cartIcons">
@@ -309,7 +311,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const shopUrl = "{{ shop.url }}";
     const shop = shopUrl.replace(/^https?:\/\//, "");
     
-    const res = await fetch(`/apps/meroxio-proxyyy/hasSubscription?shop=${shop}`, {
+    const res = await fetch(`/apps/floating-cart/hasSubscription?shop=${shop}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" }
     });
@@ -351,6 +353,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       poweredBy.style.visibility = 'visible';
   
     }
+   if (floating_bar) {
+  floating_bar.style.borderTopLeftRadius = '0';
+  floating_bar.style.borderTopRightRadius = '0';
+}
+
 
     } else if (plan === 'premium') {
       if (priceEl2) priceEl2.style.display = 'none';
@@ -359,6 +366,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       poweredBy.style.display = 'none';
       poweredBy.style.visibility = 'hidden';
     }
+
+       if (floating_bar) {
+  floating_bar.style.borderTopLeftRadius = '8';
+  floating_bar.style.borderTopRightRadius = '8';
+}
     } else if (plan === 'unlimited') {
       if (priceEl2) priceEl2.style.display = 'block';
       if (design2Btn) design2Btn.style.display = 'flex';
@@ -366,6 +378,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       poweredBy.style.display = 'none';
       poweredBy.style.visibility = 'hidden';
     }
+           if (floating_bar) {
+  floating_bar.style.borderTopLeftRadius = '8';
+  floating_bar.style.borderTopRightRadius = '8';
+}
     }
 
     // Apply color settings

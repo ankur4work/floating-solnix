@@ -14,31 +14,30 @@ import {
   Modal,
   TextContainer,
 } from "@shopify/polaris";
-import { CircleTickMinor } from "@shopify/polaris-icons";
+import { CircleTickMinor, CancelSmallMinor } from "@shopify/polaris-icons";
 import { Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../hooks";
-
-/**
- * Pricing screen for Floating Cart Button
- * Frontend plans: "free" | "basic" | "premium"
- * Backend plans:  "premium" (MeroxIO Basic) | "unlimited" (MeroxIO Premium)
- * Mapping:
- *   frontend basic   -> backend premium
- *   frontend premium -> backend unlimited
- */
 
 export default function Pricing() {
   const app = useAppBridge();
   const fetchAuth = useAuthenticatedFetch();
   const redirect = Redirect.create(app);
 
-  // UI helpers
   const tick = useMemo(() => <Icon source={CircleTickMinor} color="success" />, []);
+  const cross = useMemo(() => <Icon source={CancelSmallMinor} color="subdued" />, []);
 
-  // Current tier from server: "free" | "premium" | "unlimited"
-  const [serverTier, setServerTier] = useState(null); // null while loading
-  // Derived frontend selection: "free" | "basic" | "premium"
+  const [serverTier, setServerTier] = useState(null);
+  const [loading, setLoading] = useState({ page: true, action: null });
+  const [confirm, setConfirm] = useState({ open: false, target: null, title: "", message: "" });
+  const [banner, setBanner] = useState({ msg: "", status: null });
+
+  const planPrices = {
+    free: "0.00",
+    basic: "10.00",
+    premium: "100.00",
+  };
+
   const selectedPlan = useMemo(() => {
     if (!serverTier) return null;
     if (serverTier === "free") return "free";
@@ -47,48 +46,20 @@ export default function Pricing() {
     return "free";
   }, [serverTier]);
 
-  // Loading flags
-  const [loading, setLoading] = useState({
-    page: true,
-    action: null, // "free" | "basic" | "premium" while doing action
-  });
-
-  // Confirm modal
-  const [confirm, setConfirm] = useState({
-    open: false,
-    target: null, // "free" | "basic" | "premium"
-    title: "",
-    message: "",
-  });
-
-  // Banner
-  const [banner, setBanner] = useState({ msg: "", status: null }); // success | warning | critical | null
-
-  // --- prices (shown in modal) ---
-  const planPrices = {
-    free: "0.00",
-    basic: "10.00",
-    premium: "100.00",
-  };
-
-  // ---------- load current plan ----------
   async function refreshTier() {
     try {
       setLoading((s) => ({ ...s, page: true }));
       const res = await fetchAuth("/api/hasActiveSubscription");
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Failed to fetch subscription");
-
-      // backend returns tier: "free" | "premium" | "unlimited"
       if (["free", "premium", "unlimited"].includes(data?.tier)) {
         setServerTier(data.tier);
       } else {
-        // fallback if only boolean provided
         setServerTier(data?.hasActiveSubscription ? "premium" : "free");
       }
     } catch (e) {
       console.error(e);
-      setServerTier("free"); // safe fallback
+      setServerTier("free");
       setBanner({ msg: "Failed to fetch subscription status.", status: "critical" });
     } finally {
       setLoading((s) => ({ ...s, page: false }));
@@ -97,10 +68,8 @@ export default function Pricing() {
 
   useEffect(() => {
     refreshTier();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---------- confirm helpers ----------
   const openConfirm = (targetPlan) => {
     if (targetPlan === selectedPlan) {
       setBanner({
@@ -116,24 +85,18 @@ export default function Pricing() {
         target: "free",
         title: "Switch to Free plan?",
         message:
-          "You’ll cancel the current subscription and return to the Free plan. Customization settings, product total price and Design 2 button will be unavailable.",
+          "You’ll cancel your current subscription and move to the Free plan. Some advanced features will be disabled.",
       });
       return;
     }
 
-    // Upgrades
     const title =
       targetPlan === "basic" ? "Upgrade to Basic?" : "Upgrade to Premium?";
     const message =
       targetPlan === "basic"
-        ? "Basic enables customization settings and design changes. Product total price & Design 2 button remain disabled. Continue?"
-        : "Premium enables all features, including customization settings, total product price, and Design 2 button. Continue?";
-    setConfirm({
-      open: true,
-      target: targetPlan,
-      title,
-      message,
-    });
+        ? "Basic enables customization settings and design changes. Product total price & Design 2 button remain disabled."
+        : "Premium unlocks all features, including total product price and Design 2 button.";
+    setConfirm({ open: true, target: targetPlan, title, message });
   };
 
   const runConfirm = async () => {
@@ -142,13 +105,11 @@ export default function Pricing() {
     await changePlan(target);
   };
 
-  // ---------- plan actions ----------
   const changePlan = async (targetPlan) => {
     if (!targetPlan) return;
     try {
       setLoading((s) => ({ ...s, action: targetPlan }));
 
-      // Downgrade to free -> cancel
       if (targetPlan === "free") {
         const res = await fetchAuth("/api/cancelSubscription");
         const data = await res.json().catch(() => ({}));
@@ -162,9 +123,6 @@ export default function Pricing() {
         return;
       }
 
-      // Upgrades
-      // Map frontend -> backend
-      // basic -> premium (MeroxIO Basic), premium -> unlimited (MeroxIO Premium)
       const backendPlan = targetPlan === "basic" ? "premium" : "unlimited";
       const res = await fetchAuth(`/api/createSubscription?plan=${backendPlan}`);
       const data = await res.json().catch(() => ({}));
@@ -173,10 +131,7 @@ export default function Pricing() {
       if (data?.isActiveSubscription) {
         await refreshTier();
         setBanner({
-          msg:
-            targetPlan === "basic"
-              ? "Basic is already active."
-              : "Premium is already active.",
+          msg: `${labelOf(targetPlan)} plan is already active.`,
           status: "success",
         });
       } else if (data?.confirmationUrl) {
@@ -199,20 +154,17 @@ export default function Pricing() {
     }
   };
 
-  // ---------- helpers ----------
   const isCurrent = (plan) => selectedPlan === plan;
   const labelOf = (plan) =>
     plan === "free" ? "Free" : plan === "basic" ? "Basic" : "Premium";
 
-  // ---------- feature bullets per plan ----------
   const Feature = ({ enabled, children }) => (
     <Stack spacing="tight" alignment="center">
-      <Icon source={CircleTickMinor} color={enabled ? "success" : "subdued"} />
-      <span style={{ opacity: enabled ? 1 : 0.55 }}>{children}</span>
+      {enabled ? tick : cross}
+      <span style={{ color: "#111" }}>{children}</span>
     </Stack>
   );
 
-  // ---------- Skeleton while page status loads ----------
   if (loading.page && !selectedPlan) {
     return (
       <Frame>
@@ -233,19 +185,57 @@ export default function Pricing() {
 
   const commonCardStyle = {
     borderRadius: 12,
-    border: "1px solid var(--p-color-border-subdued, #E3E3E3)",
+    border: "1px solid #E3E3E3",
+    position: "relative",
+    overflow: "hidden",
   };
   const glowIfCurrent = (plan) =>
     isCurrent(plan)
-      ? {
-          boxShadow: "0 10px 30px rgba(68, 138, 255, 0.22)",
-          border: "2px solid rgba(68,138,255,0.55)",
-        }
+      ? { boxShadow: "0 10px 30px rgba(37,99,235,0.25)", border: "2px solid #2563EB" }
       : {};
+
+  const FreeWatermark = () => (
+    <div
+      style={{
+        position: "absolute",
+        top: "40%",
+        left: "-15%",
+        transform: "rotate(-30deg)",
+        fontSize: "48px",
+        color: "rgba(0,0,0,0.06)",
+        fontWeight: "700",
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    >
+      Free plan
+    </div>
+  );
+
+  // Custom badge styles
+  const customBadge = {
+    backgroundColor: "#007a5c", // soft green background like 'Popular'
+    color: "white",
+    borderRadius: "12px",
+    padding: "2px 12px",
+     display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+
+  };
+
+  const currentBadge = {
+    backgroundColor: "#2563EB", // blue background
+    color: "#FFFFFF", // white text
+    borderRadius: " 12px",
+    padding: "2px 8px",
+         display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  };
 
   return (
     <Frame>
-      {/* Confirm modal */}
       <Modal
         open={confirm.open}
         onClose={() => setConfirm((c) => ({ ...c, open: false }))}
@@ -280,15 +270,16 @@ export default function Pricing() {
           <Layout.Section oneThird>
             <Card
               sectioned
+              style={{ ...commonCardStyle, ...glowIfCurrent("free") }}
               title={
                 <Stack alignment="center" spacing="tight">
                   <span>Free</span>
-                  <Badge status="new">Starter</Badge>
-                  {isCurrent("free") && <Badge status="attention">Current</Badge>}
+                  <span style={customBadge}>Starter</span>
+                  {isCurrent("free") && <span style={currentBadge}>Current</span>}
                 </Stack>
               }
-              style={{ ...commonCardStyle, ...glowIfCurrent("free") }}
             >
+              <FreeWatermark />
               <div style={{ fontSize: 28, fontWeight: 700, marginBottom: 6 }}>$0</div>
               <p style={{ color: "var(--p-text-subdued)" }}>
                 Customization disabled • Design change disabled • Product total price hidden • Design 2 button disabled
@@ -296,7 +287,7 @@ export default function Pricing() {
 
               <div style={{ height: 12 }} />
               <Stack vertical spacing="loose">
-                  <Feature enabled={true}>Powered by Meroxio bar</Feature>
+                <Feature enabled={true}>Watermark enabled</Feature>
                 <Feature enabled={false}>Customization settings</Feature>
                 <Feature enabled={false}>Design change</Feature>
                 <Feature enabled={false}>Product total price</Feature>
@@ -317,18 +308,18 @@ export default function Pricing() {
             </Card>
           </Layout.Section>
 
-          {/* BASIC ($10) */}
+          {/* BASIC */}
           <Layout.Section oneThird>
             <Card
               sectioned
+              style={{ ...commonCardStyle, ...glowIfCurrent("basic") }}
               title={
                 <Stack alignment="center" spacing="tight">
                   <span>Basic</span>
-                  <Badge status="success">Popular</Badge>
-                  {isCurrent("basic") && <Badge status="success">Current</Badge>}
+                  <span style={customBadge}>Popular</span>
+                  {isCurrent("basic") && <span style={currentBadge}>Current</span>}
                 </Stack>
               }
-              style={{ ...commonCardStyle, ...glowIfCurrent("basic") }}
             >
               <div style={{ fontSize: 28, fontWeight: 700, marginBottom: 6 }}>$10</div>
               <p style={{ color: "var(--p-text-subdued)" }}>
@@ -337,7 +328,7 @@ export default function Pricing() {
 
               <div style={{ height: 12 }} />
               <Stack vertical spacing="loose">
-                  <Feature enabled={false}>Powered by Meroxio bar</Feature>
+                <Feature enabled={false}>Watermark disabled</Feature>
                 <Feature enabled={true}>Customization settings</Feature>
                 <Feature enabled={true}>Design change</Feature>
                 <Feature enabled={false}>Product total price</Feature>
@@ -358,18 +349,18 @@ export default function Pricing() {
             </Card>
           </Layout.Section>
 
-          {/* PREMIUM ($100) */}
+          {/* PREMIUM */}
           <Layout.Section oneThird>
             <Card
               sectioned
+              style={{ ...commonCardStyle, ...glowIfCurrent("premium") }}
               title={
                 <Stack alignment="center" spacing="tight">
                   <span>Premium</span>
-                  <Badge status="info">Full features</Badge>
-                  {isCurrent("premium") && <Badge status="info">Current</Badge>}
+                  <span style={customBadge}>Full features</span>
+                  {isCurrent("premium") && <span style={currentBadge}>Current</span>}
                 </Stack>
               }
-              style={{ ...commonCardStyle, ...glowIfCurrent("premium") }}
             >
               <div style={{ fontSize: 28, fontWeight: 700, marginBottom: 6 }}>$100</div>
               <p style={{ color: "var(--p-text-subdued)" }}>
@@ -378,7 +369,7 @@ export default function Pricing() {
 
               <div style={{ height: 12 }} />
               <Stack vertical spacing="loose">
-                <Feature enabled={false}>Powered by Meroxio bar</Feature>
+                <Feature enabled={false}>Watermark disabled</Feature>
                 <Feature enabled={true}>Customization settings</Feature>
                 <Feature enabled={true}>Design change</Feature>
                 <Feature enabled={true}>Product total price</Feature>

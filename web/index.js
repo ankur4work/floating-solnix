@@ -47,7 +47,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
 /* -------------------- Subscription Check (MongoDB Session) -------------------- */
-app.get("/api/meroxio-proxyyy/hasSubscription", async (req, res) => {
+app.get("/api/floating-cart/hasSubscription", async (req, res) => {
   try {
     console.log("inside hassubs");
     const { shop } = req.query;
