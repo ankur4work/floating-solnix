@@ -1,6 +1,33 @@
 {% if block.settings.selectDesign == 'design1' %}
   <style>
 
+  
+
+.mx_poweredby_meroxio {
+    position: absolute;
+    top: -24px;
+    right: 3px;
+    font-size: 11px;
+    color: #888;
+    font-weight: 500;
+    display: none;
+    animation: fadeInOut 2s infinite alternate;
+    /* padding-right: 17px; */
+    background: black;
+    /* margin-right: 10px; */
+    padding: 5px 13px;
+    color: white;
+    font-weight: 900;
+    font-size: 14px;
+    border-radius: 8px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+     display = 'none';
+    visibility = 'hidden';
+}
+
+
+
         .mx_floating_elpySv {
               position: fixed;
               bottom: -100%;
@@ -32,6 +59,7 @@
               border-radius: 8px;
               height: 56px;
               cursor:pointer;
+              position:relative;
           }
 
       .mx_floating_elpySv .mx_floating_flexview {
@@ -81,6 +109,16 @@
         right: 2px;
         background:transparent;
 }
+
+.mx_poweredby_meroxio {
+ 
+    padding: 5px 8px;
+ 
+    font-size: 11px;
+}
+  
+
+
 .mx_floating_elpySv {
   {% if block.settings.desktop_show_cart_box_ %}
     display: block;
@@ -94,7 +132,10 @@
   </style>
  
     <div class="mx_floating_sc-hSdWYo   mx_desing_Select_1 mx_floating_elpySv mx_floating_btn   " data-shop="{{ shopUrl }}">
+
       <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
+        <div class="mx_poweredby_meroxio">Powered by Meroxio</div>
+
         <div class="mx_floating_flexview">
           <div class="mx_floating_cartIcons">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -258,6 +299,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let plan = "free"; // default plan
 
   const floatingWrapper = document.querySelector('.mx_floating_elpySv');
+    const poweredBy = document.querySelector('.mx_poweredby_meroxio');
   if (floatingWrapper) {
     floatingWrapper.style.visibility = "hidden"; // hide until logic done
   }
@@ -302,12 +344,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (plan === 'free') {
       if (priceEl2) priceEl2.style.display = 'none';
       if (design2Btn) design2Btn.style.display = 'none';
+       // Show/hide powered by text every 2s
+
+    if (poweredBy) {
+      poweredBy.style.display = 'block';
+      poweredBy.style.visibility = 'visible';
+  
+    }
+
     } else if (plan === 'premium') {
       if (priceEl2) priceEl2.style.display = 'none';
       if (design2Btn) design2Btn.style.display = 'none';
+          if (poweredBy) {
+      poweredBy.style.display = 'none';
+      poweredBy.style.visibility = 'hidden';
+    }
     } else if (plan === 'unlimited') {
       if (priceEl2) priceEl2.style.display = 'block';
       if (design2Btn) design2Btn.style.display = 'flex';
+        if (poweredBy) {
+      poweredBy.style.display = 'none';
+      poweredBy.style.visibility = 'hidden';
+    }
     }
 
     // Apply color settings

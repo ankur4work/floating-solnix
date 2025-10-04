@@ -296,6 +296,7 @@ export default function Pricing() {
 
               <div style={{ height: 12 }} />
               <Stack vertical spacing="loose">
+                  <Feature enabled={true}>Powered by Meroxio bar</Feature>
                 <Feature enabled={false}>Customization settings</Feature>
                 <Feature enabled={false}>Design change</Feature>
                 <Feature enabled={false}>Product total price</Feature>
@@ -336,6 +337,7 @@ export default function Pricing() {
 
               <div style={{ height: 12 }} />
               <Stack vertical spacing="loose">
+                  <Feature enabled={false}>Powered by Meroxio bar</Feature>
                 <Feature enabled={true}>Customization settings</Feature>
                 <Feature enabled={true}>Design change</Feature>
                 <Feature enabled={false}>Product total price</Feature>
@@ -376,6 +378,7 @@ export default function Pricing() {
 
               <div style={{ height: 12 }} />
               <Stack vertical spacing="loose">
+                <Feature enabled={false}>Powered by Meroxio bar</Feature>
                 <Feature enabled={true}>Customization settings</Feature>
                 <Feature enabled={true}>Design change</Feature>
                 <Feature enabled={true}>Product total price</Feature>
