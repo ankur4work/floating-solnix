@@ -1,5 +1,5 @@
 {
-  "name": "meroxio-floating-cart-button",
+  "name": "meroxio-gst-checkout",
   "version": "1.0.0",
   "main": "web/index.js",
   "license": "UNLICENSED",
