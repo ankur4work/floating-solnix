@@ -398,7 +398,7 @@ app.get("/api/store-details", async (_req, res) => {
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
-app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res) => {
+app.use("/*", async (_req, res) => {
   return res
     .status(HTTP_STATUS.OK)
     .set("Content-Type", "text/html")
