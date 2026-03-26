@@ -3,7 +3,7 @@
 
   
 
-.mx_poweredby_meroxio {
+.mx_poweredby_solnix {
       position: absolute;
     top: -24px;
     /* right: 3px; */
@@ -112,7 +112,7 @@
         background:transparent;
 }
 
-.mx_poweredby_meroxio {
+.mx_poweredby_solnix {
  
     padding: 5px 8px;
  
@@ -136,7 +136,7 @@
     <div class="mx_floating_sc-hSdWYo   mx_desing_Select_1 mx_floating_elpySv mx_floating_btn   " data-shop="{{ shopUrl }}">
 
       <div class="mx_floating_viewcart-box" onclick="clickCartLink()">
-        <div class="mx_poweredby_meroxio">Free plan</div>
+        <div class="mx_poweredby_solnix">Free plan</div>
 
         <div class="mx_floating_flexview">
           <div class="mx_floating_cartIcons">
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let plan = "free"; // default plan
 
   const floatingWrapper = document.querySelector('.mx_floating_elpySv');
-    const poweredBy = document.querySelector('.mx_poweredby_meroxio');
+    const poweredBy = document.querySelector('.mx_poweredby_solnix');
   if (floatingWrapper) {
     floatingWrapper.style.visibility = "hidden"; // hide until logic done
   }
@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 </script>
 {% schema %}
 {
-  "name": "Floating Cart Button",
+  "name": "Solnix FloatCart",
   "target": "body",
   "settings": [
     {

@@ -1,7 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { NavigationMenu } from "@shopify/app-bridge-react";
 import Routes from "./Routes";
-
 import {
   AppBridgeProvider,
   QueryProvider,
@@ -9,8 +8,6 @@ import {
 } from "./components";
 
 export default function App() {
-  // Any .tsx or .jsx files in /pages will become a route
-  // See documentation for <Routes /> for more info
   const pages = import.meta.globEager("./pages/**/!(*.test.[jt]sx)*.([jt]sx)");
 
   return (
@@ -20,8 +17,10 @@ export default function App() {
           <QueryProvider>
             <NavigationMenu
               navigationLinks={[
-
-                 { label: "Pricing", destination: "/pricing" }, // ← NEW,
+                { label: "Home", destination: "/" },
+                { label: "Setup", destination: "/install" },
+                { label: "Pricing", destination: "/pricing" },
+                { label: "Support", destination: "/support" },
               ]}
             />
             <Routes pages={pages} />

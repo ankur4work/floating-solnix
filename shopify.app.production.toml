@@ -1,0 +1,28 @@
+# Production configuration for floating.solnix.store
+
+client_id = "1f11bdd66beb566cff21f9da01b0ddb5"
+name = "solnix-floatcart"
+application_url = "https://floating.solnix.store"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = false
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2026-04"
+
+[access_scopes]
+scopes = "write_cart_transforms,write_draft_orders,write_products"
+
+[auth]
+redirect_urls = [
+  "https://floating.solnix.store/auth/callback",
+  "https://floating.solnix.store/auth/shopify/callback",
+  "https://floating.solnix.store/api/auth/callback",
+]
+
+[app_proxy]
+url = "https://floating.solnix.store/api/floating-cart"
+subpath = "floating-cart"
+prefix = "apps"

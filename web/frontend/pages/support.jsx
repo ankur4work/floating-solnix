@@ -1,156 +1,146 @@
+import React from "react";
 import {
-    Card, Page, Layout,  Heading, MediaCard,  Button,  Icon, Frame,
-    TopBar
+  Button,
+  Card,
+  Layout,
+  Page,
+  Stack,
+  TextContainer,
 } from "@shopify/polaris";
-import {
-    HomeMajor, ChecklistMajor, QuestionMarkMajor, CashDollarMajor
-} from '@shopify/polaris-icons';
-import { useState, useCallback } from 'react';
-import { FAQ } from "../components/FAQ";
 import { useNavigate } from "react-router-dom";
 
+const faqs = [
+  {
+    question: "Which themes are supported?",
+    answer:
+      "Solnix FloatCart is designed for Online Store 2.0 themes where app embeds can be enabled directly from the theme editor.",
+  },
+  {
+    question: "Where does the floating cart button appear?",
+    answer:
+      "The app embed is intended for storefront product experiences and should be checked on both desktop and mobile after activation.",
+  },
+  {
+    question: "What does Premium add?",
+    answer:
+      "Premium unlocks advanced storefront customization, richer cart presentation, and the polished production-ready FloatCart experience.",
+  },
+  {
+    question: "How do I get setup help?",
+    answer:
+      "Reach out at support@solnix.store and include your shop domain plus a short note about the issue you are seeing.",
+  },
+];
 
 export default function Support() {
+  const navigate = useNavigate();
 
-    const [open, setOpen] = useState(true);
+  return (
+    <Page
+      title="Support"
+      subtitle="Clear help for setup, billing, and storefront activation."
+      fullWidth
+    >
+      <div
+        style={{
+          marginBottom: 24,
+          padding: 28,
+          borderRadius: 26,
+          background:
+            "radial-gradient(circle at top left, rgba(17,24,39,0.18), transparent 24%), linear-gradient(135deg, #111827 0%, #1f2937 52%, #c96f2d 100%)",
+          color: "#fff",
+        }}
+      >
+        <div style={{ maxWidth: 720 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              padding: "6px 12px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.12)",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+            }}
+          >
+            Solnix support
+          </div>
+          <h1
+            style={{
+              marginTop: 16,
+              marginBottom: 12,
+              fontSize: 36,
+              lineHeight: 1.1,
+            }}
+          >
+            Support that matches the storefront you are building.
+          </h1>
+          <p
+            style={{
+              marginTop: 0,
+              marginBottom: 20,
+              maxWidth: 620,
+              fontSize: 16,
+              lineHeight: 1.7,
+              color: "rgba(255,255,255,0.82)",
+            }}
+          >
+            Whether you are activating the embed for the first time or moving a
+            store onto Premium, we want the next step to feel straightforward.
+          </p>
+          <Stack spacing="tight">
+            <Button primary onClick={() => window.open("mailto:support@solnix.store")}>
+              Email support
+            </Button>
+            <Button onClick={() => navigate("/install")}>Open setup guide</Button>
+            <Button onClick={() => navigate("/pricing")}>Review pricing</Button>
+          </Stack>
+        </div>
+      </div>
 
-    const handleToggle = useCallback(() => setOpen((open) => !open), []);
+      <Layout>
+        <Layout.Section oneHalf>
+          <Card sectioned title="Best way to reach us">
+            <TextContainer>
+              <p>
+                Email <strong>support@solnix.store</strong> with your shop domain,
+                theme name, and a short description of what you want the floating
+                cart experience to do.
+              </p>
+              <p>
+                For billing questions, mention whether the store is on the Free
+                or Premium plan so we can point you to the right next step.
+              </p>
+            </TextContainer>
+          </Card>
+        </Layout.Section>
 
-    const q1 = "Where can I use this application?"
-    const a1 = "You can use this application on any product page."
+        <Layout.Section oneHalf>
+          <Card sectioned title="Helpful shortcuts">
+            <Stack vertical spacing="tight">
+              <div>Use the dashboard to jump directly into the current theme editor.</div>
+              <div>Use the pricing page to start or cancel the $149 Premium plan.</div>
+              <div>Use the setup guide when you need a quick storefront checklist.</div>
+            </Stack>
+          </Card>
+        </Layout.Section>
 
-    const q2 = "Is this app compatable with my theme ? How do I check ?"
-    const a2 = "Our app is 2.0 compatable. No matter which theme you are using but it must be 2.0 theme."
-
-    const q3 = "Is there any speed or performance related issue with this app ?"
-    const a3 = "No, we love performance. Our application is highly optimized, fast, and lightweight."
-
-    const q4 = "Does the app supports non 2.0 themes ?"
-    const a4 = "No, for the time being, the app doesn't support non-2.0 themes."
-
-    const q5 = "Can I connect multiple products in single image ?"
-    const a5 = "Yes, you can connect upto 5 products in a single image."
-
-    const q6 = "Can I customize the color,heading or image ?"
-    const a6 = "Yes, you can customize your layout and color according to your requirements. In case of any queries, please feel free to contact us at: info@meroxio.com"
-
-    const q7 = "Is this application compatible with all browser and IOS device ?"
-    const a7 = "Yes, we made sure that our application supports all browsers and devices."
-
-    const q8 = "What are the differnet use cases for this app?"
-    const a8 = "You can use it with multiple ways like Similar products, Pair it with, Product recommendations, Buy it with"
-
-
-    const mediaCardDesc = <span>Relax and unwind, we are here to help. Please feel free to contact us at: <br></br><strong>support@meroxio.com</strong></span>;
-
-    const navigate = useNavigate();
-
-    const logo = {
-
-        width: 450,
-        height: 90,
-        topBarSource:
-            `https://cdn.shopify.com/s/files/1/0629/5522/5264/files/MeroxIO_Comparison_Slider.png?v=1702290807`,
-        url: '/',
-        accessibilityLabel: 'https://cdn.shopify.com/s/files/1/0627/5727/3793/files/lookbook_logo.png?v=1666164778',
-    };
-    const gotoHomePage = () => {
-        navigate("/");
-    }
-
-    const gotoInstallPage = () => {
-        navigate("/install");
-
-    }
-
-    const gotoSupportPage = () => {
-        navigate("/support");
-    }
-
-    const gotoPricingPage = () => {
-        navigate("/pricing");
-    }
-
-    const secondaryMenuMarkup = (
-        <TopBar.Menu
-            activatorContent={
-                <div className="main-icon">
-                    <div className="main-icon-1"><Button onClick={gotoHomePage} plain monochrome removeUnderline fullWidth >
-                        <div className="m-icon-show-1"><Icon source={HomeMajor} /><span className="m-hover-text-1"> <h1>Home</h1></span></div></Button>
-
-                    </div>
+        <Layout.Section>
+          <Card sectioned title="Frequently asked questions">
+            <Stack vertical spacing="loose">
+              {faqs.map((faq) => (
+                <div key={faq.question}>
+                  <div style={{ fontWeight: 700, color: "#111827" }}>{faq.question}</div>
+                  <div style={{ marginTop: 6, color: "#4b5563", lineHeight: 1.7 }}>
+                    {faq.answer}
+                  </div>
                 </div>
-            }
-
-        />
-    );
-
-    const topBarMarkup = (
-        <TopBar
-            secondaryMenu={secondaryMenuMarkup}
-
-        />
-
-    );
-
-
-    return (
-
-        <Frame topBar={topBarMarkup} logo={logo} >
-            <Page>
-
-                <Layout>
-                    <Layout.Section>
-
-                        <MediaCard
-                            title="Amazing customer support"
-                            primaryAction={{
-                                content: 'Email Now',
-                                onAction: () => {
-                                    console.log('clicked')
-                                    window.open('mailto:support@meroxio.com')
-                                },
-                            }}
-                            description={mediaCardDesc}
-
-                        >
-                            <img
-                                alt=""
-                                width="100%"
-                                height="100%"
-                                style={{
-                                    objectFit: 'cover',
-                                    objectPosition: 'center',
-                                }}
-                                src="https://cdn.shopify.com/s/files/1/0024/0084/5893/files/Copy_of_hanloy.gif?v=1661494528"
-                            />
-                        </MediaCard>
-
-
-                    </Layout.Section>
-                </Layout>
-
-                <Layout>
-                    <Layout.Section>
-                        <Heading id="faqHeading">Frequently Asked Questions</Heading>
-                        <div style={{ marginBottom: '40px' }}>
-                            <Card>
-                                <div className="faq">
-                                    <FAQ q={q1} a={a1} />
-                                    <FAQ q={q2} a={a2} />
-                                    <FAQ q={q3} a={a3} />
-                                    <FAQ q={q4} a={a4} />
-                                    <FAQ q={q5} a={a5} />
-                                    <FAQ q={q6} a={a6} />
-                                    <FAQ q={q7} a={a7} />
-                                    <FAQ q={q8} a={a8} />
-                                </div>
-                            </Card>
-
-                        </div>
-                    </Layout.Section>
-                </Layout>
-            </Page>
-        </Frame>
-    );
+              ))}
+            </Stack>
+          </Card>
+        </Layout.Section>
+      </Layout>
+    </Page>
+  );
 }

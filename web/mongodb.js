@@ -1,16 +1,25 @@
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
-const uri = "mongodb+srv://meroxio:%40%23MeroxIO%23%40@cluster0.xcu2ogt.mongodb.net/?retryWrites=true&w=majority"; // Update with your connection string
-const dbName = "floating-cart-button"; // Name of your database
-const collectionName = "shopify_sessions"; // Collection to store sessions
+dotenv.config();
+
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_DATABASE || "solnix_floatcart";
+const collectionName =
+  process.env.MONGODB_COLLECTION || "shopify_sessions";
 
 let client;
 
 export const connectToMongoDB = async () => {
+  if (!uri) {
+    throw new Error("MONGODB_URI is not configured.");
+  }
+
   if (!client) {
     client = new MongoClient(uri);
     await client.connect();
     console.log("Connected to MongoDB for session storage");
   }
+
   return client.db(dbName).collection(collectionName);
 };

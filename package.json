@@ -1,15 +1,21 @@
 {
-  "name": "meroxio-floating-cart-button",
+  "name": "solnix-floatcart",
   "version": "1.0.0",
   "main": "web/index.js",
   "license": "UNLICENSED",
   "scripts": {
+    "predev": "node scripts/patch-shopify-cli.js",
     "shopify": "shopify",
     "build": "shopify app build",
+    "build:frontend": "npm --prefix web/frontend run build",
     "dev": "shopify app dev",
+    "dev:reset": "shopify app dev --reset",
     "info": "shopify app info",
+    "info:prod": "shopify app info -c production",
     "generate": "shopify app generate",
-    "deploy": "shopify app deploy"
+    "deploy": "shopify app deploy",
+    "deploy:prod": "shopify app deploy -c production",
+    "serve:prod": "npm --prefix web run serve"
   },
   "dependencies": {
     "@shopify/app": "^3.58.2",
@@ -19,5 +25,5 @@
     "react-syntax-highlighter": "^15.6.1",
     "sqlite3": "^5.1.7"
   },
-  "author": "Shivam Merothiya"
+  "author": "Ankur"
 }

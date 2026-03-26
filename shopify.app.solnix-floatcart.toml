@@ -2,11 +2,12 @@
 
 client_id = "1f11bdd66beb566cff21f9da01b0ddb5"
 name = "solnix-floatcart"
-application_url = "https://politics-apache-site-brake.trycloudflare.com"
+application_url = "https://propose-courtesy-lead-frost.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2026-04"
@@ -16,9 +17,9 @@ api_version = "2026-04"
 scopes = "write_cart_transforms,write_draft_orders,write_products"
 
 [auth]
-redirect_urls = ["https://politics-apache-site-brake.trycloudflare.com/auth/callback", "https://politics-apache-site-brake.trycloudflare.com/auth/shopify/callback", "https://politics-apache-site-brake.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://propose-courtesy-lead-frost.trycloudflare.com/auth/callback", "https://propose-courtesy-lead-frost.trycloudflare.com/auth/shopify/callback", "https://propose-courtesy-lead-frost.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://politics-apache-site-brake.trycloudflare.com/api/floating-cart"
+url = "https://propose-courtesy-lead-frost.trycloudflare.com/api/floating-cart"
 subpath = "floating-cart"
 prefix = "apps"

@@ -1,320 +1,217 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Card,
-  Page,
-  Layout,
-  TextContainer,
-  Button,
-  Modal,
-  Frame,
-  TopBar,
-  CalloutCard,
-  DisplayText,
-  Toast,
-  SkeletonBodyText,
   Banner,
+  Button,
+  CalloutCard,
+  Card,
+  Layout,
+  Page,
+  SkeletonBodyText,
+  Stack,
 } from "@shopify/polaris";
-import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 import { useNavigate } from "react-router-dom";
-import { Redirect } from "@shopify/app-bridge/actions";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { shopifyBackground } from "../assets";
+import { useAuthenticatedFetch } from "../hooks";
 
 export default function HomePage() {
-  const emptyToastProps = { content: null };
-  const [toastProps, setToastProps] = useState(emptyToastProps);
-  const [selectedPlan, setSelectedPlan] = useState("free"); // default Free
-  const [loadingPlan, setLoadingPlan] = useState(null);
-  const [confirmPlan, setConfirmPlan] = useState(null);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [activateError, setActivateError] = useState(null);
-
-  const app = useAppBridge();
-  const fetch = useAuthenticatedFetch();
-  const redirect = Redirect.create(app);
-
-  // --- Prices map ---
-  const planPrices = {
-    basic: "10.00",
-    premium: "100.00",
-  };
-
-  // Fetch current plan
-  const { data: subscriptionData, isLoading } = useAppQuery({
-    url: "/api/hasActiveSubscription",
-  });
+  const navigate = useNavigate();
+  const fetchAuth = useAuthenticatedFetch();
+  const [tier, setTier] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activateError, setActivateError] = useState("");
 
   useEffect(() => {
-    if (subscriptionData?.tier) {
-      // Map backend tiers → frontend tiers
-      let frontendTier = "free";
-      if (subscriptionData.tier === "premium") frontendTier = "basic";
-      if (subscriptionData.tier === "unlimited") frontendTier = "premium";
-      setSelectedPlan(frontendTier);
-    }
-  }, [subscriptionData]);
+    loadSubscription();
+  }, []);
 
-  // --- Handle plan click ---
-  const requestPlanChange = (plan) => {
-    setConfirmPlan(plan);
-    setShowConfirm(true);
-  };
+  async function loadSubscription() {
+    try {
+      setLoading(true);
+      const response = await fetchAuth("/api/hasActiveSubscription");
+      const data = await response.json().catch(() => ({}));
 
-  const confirmSubscription = async () => {
-    if (!confirmPlan) return;
-
-    // Case 1: Already on this plan
-    if (selectedPlan === confirmPlan) {
-      setToastProps({ content: `You are already on the ${confirmPlan} plan ✅` });
-      setShowConfirm(false);
-      return;
-    }
-
-    // Case 2: Switching to free (cancel subscription)
-    if (confirmPlan === "free") {
-      setLoadingPlan(confirmPlan);
-      try {
-        const res = await fetch("/api/cancelSubscription");
-        const data = await res.json();
-
-        if (data.status && data.status !== "No subscription found") {
-          setSelectedPlan("free");
-          setToastProps({ content: "Subscription cancelled, switched to Free plan ✅" });
-        } else {
-          setToastProps({ content: "Failed to cancel subscription", error: true });
-        }
-      } catch (err) {
-        setToastProps({ content: "Cancel failed ❌", error: true });
-      } finally {
-        setLoadingPlan(null);
-        setShowConfirm(false);
+      if (!response.ok) {
+        throw new Error(data?.error || "Failed to load subscription.");
       }
-      return;
+
+      setTier(data?.tier || "free");
+    } catch (error) {
+      console.error(error);
+      setTier("free");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    // Case 3: Switching to paid plan
-    setLoadingPlan(confirmPlan);
-
-    // Map frontend → backend values
-    let backendPlan = confirmPlan;
-    if (confirmPlan === "basic") backendPlan = "premium"; // frontend basic = backend premium
-    if (confirmPlan === "premium") backendPlan = "unlimited"; // frontend premium = backend unlimited
+  async function handleActivateCart() {
+    setActivateError("");
 
     try {
-      const res = await fetch(`/api/createSubscription?plan=${backendPlan}`);
-      const data = await res.json();
-      if (data.confirmationUrl) {
-        setToastProps({ content: "Redirecting to payment page..." });
-        redirect.dispatch(Redirect.Action.REMOTE, data.confirmationUrl);
-      } else if (data.error) {
-        setToastProps({ content: data.error, error: true });
+      const response = await fetchAuth("/api/getshop");
+      const data = await response.json();
+
+      if (!response.ok || !data?.shop) {
+        throw new Error("Unable to resolve the store URL.");
       }
-    } catch (err) {
-      setToastProps({ content: "Something went wrong ❌", error: true });
-    } finally {
-      setLoadingPlan(null);
-      setShowConfirm(false);
+
+      window.open(
+        `https://${data.shop}/admin/themes/current/editor?context=apps&activateAppId=b355dba7-d415-49dc-8399-11206b10c9ca/floating-cart-embed`,
+        "_blank"
+      );
+    } catch (error) {
+      console.error("Activate failed:", error);
+      setActivateError(error.message);
     }
-  };
-
-  // --- Activate Floating Cart Button ---
-  // --- Activate Floating Cart Button (App Embed) ---
-const handleActivateCart = async () => {
-  setActivateError(null);
-  try {
-    const response = await fetch("/api/getshop");
-    if (!response.ok) throw new Error("Failed to get shop URL");
-    const data = await response.json();
-    if (!data.shop) throw new Error("Shop URL not available");
-
-    // ✅ Redirect directly to Shopify Theme Editor → App embeds → Floating Cart Button
-    window.open(
-      `https://${data.shop}/admin/themes/current/editor?context=apps&activateAppId=b355dba7-d415-49dc-8399-11206b10c9ca/floating-cart-embed`,
-      "_blank"
-    );
-  } catch (error) {
-    console.error("❌ Activate failed:", error);
-    setActivateError(error.message);
   }
-};
 
+  const premiumActive = tier && tier !== "free";
 
-  const toastMarkup =
-    toastProps.content && (
-      <Toast {...toastProps} onDismiss={() => setToastProps(emptyToastProps)} />
-    );
-
-  // --- Header setup ---
-  const navigate = useNavigate();
-  const logo = {
-    width: 450,
-    height: 90,
-    topBarSource: `https://cdn.shopify.com/s/files/1/0908/8562/0025/files/MeroxIO_Comparison_Slider_2.png?v=1738650835`,
-    url: "/",
-    accessibilityLabel: "MeroxIO Logo",
-  };
-
-  const topBarMarkup = <TopBar />;
-
-  // ✅ Plans now only 3
-  const plans = ["free", "basic", "premium"];
+  const statusTone = premiumActive
+    ? {
+        label: "Premium active",
+        color: "#166534",
+        background: "rgba(22,101,52,0.08)",
+      }
+    : {
+        label: "Free plan",
+        color: "#92400e",
+        background: "rgba(146,64,14,0.08)",
+      };
 
   return (
-    <Frame topBar={topBarMarkup} logo={logo}>
-      <Page>
-        {toastMarkup}
-        <Layout>
-          {/* Plan Selector */}
-          <Layout.Section>
-            <Card title="Floating Cart Button Plans" sectioned>
-              {isLoading ? (
-                <div style={{ display: "flex", gap: "12px" }}>
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} style={{ flex: 1 }}>
-                      <SkeletonBodyText lines={1} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div style={{ display: "flex", gap: "12px" }}>
-                  {plans.map((plan) => (
-                    <Button
-                      key={plan}
-                      primary={selectedPlan === plan}
-                      pressed={selectedPlan === plan}
-                      loading={loadingPlan === plan}
-                      onClick={() => requestPlanChange(plan)}
-                    >
-                      {plan === "free"
-                        ? "Free"
-                        : plan === "basic"
-                        ? "Basic"
-                        : "Premium"}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </Card>
-          </Layout.Section>
+    <Page title="Solnix FloatCart" subtitle="Control the floating cart button from one clean dashboard." fullWidth>
+      {activateError ? (
+        <Banner
+          status="critical"
+          onDismiss={() => setActivateError("")}
+        >
+          {activateError}
+        </Banner>
+      ) : null}
 
-          {/* Confirmation Modal */}
-          <Modal
-            open={showConfirm}
-            onClose={() => setShowConfirm(false)}
-            title="Confirm Subscription"
-            primaryAction={{
-              content:
-                selectedPlan === confirmPlan
-                  ? "Okay, Got it"
-                  : confirmPlan === "free"
-                  ? "Yes, Cancel Subscription"
-                  : `Subscribe for $${planPrices[confirmPlan] || "0.00"}`,
-              onAction: confirmSubscription,
-              loading: loadingPlan === confirmPlan,
+      <div
+        style={{
+          marginBottom: 24,
+          padding: 28,
+          borderRadius: 26,
+          background:
+            "radial-gradient(circle at top left, rgba(201,111,45,0.22), transparent 28%), linear-gradient(135deg, #111827 0%, #1f2937 52%, #c96f2d 100%)",
+          color: "#fff",
+        }}
+      >
+        <div style={{ maxWidth: 760 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              padding: "6px 12px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.12)",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: 1,
+              textTransform: "uppercase",
             }}
-            secondaryActions={
-              selectedPlan !== confirmPlan
-                ? [{ content: "No, Go Back", onAction: () => setShowConfirm(false) }]
-                : []
-            }
           >
-            <Modal.Section>
-              {selectedPlan === confirmPlan ? (
-                <p>
-                  You are already on the <b>{confirmPlan?.toUpperCase()}</b> plan ✅
-                </p>
-              ) : confirmPlan === "free" ? (
-                <p>
-                  Are you sure you want to cancel your current{" "}
-                  <b>{selectedPlan?.toUpperCase()}</b> subscription and switch to{" "}
-                  <b>FREE</b>?
-                </p>
-              ) : (
-                <p>
-                  Are you sure you want to subscribe to the{" "}
-                  <b>{confirmPlan?.toUpperCase()}</b> plan for{" "}
-                  <b>${planPrices[confirmPlan]}</b> per month?
-                </p>
-              )}
-            </Modal.Section>
-          </Modal>
+            floating.solnix.store
+          </div>
+          <h1
+            style={{
+              marginTop: 16,
+              marginBottom: 12,
+              fontSize: 38,
+              lineHeight: 1.08,
+            }}
+          >
+            Turn a plain cart shortcut into a storefront-ready conversion touchpoint.
+          </h1>
+          <p
+            style={{
+              marginTop: 0,
+              marginBottom: 20,
+              fontSize: 16,
+              lineHeight: 1.7,
+              color: "rgba(255,255,255,0.82)",
+            }}
+          >
+            Activate the app embed, manage your plan, and move from a starter
+            setup to the full premium storefront experience.
+          </p>
+          <Stack spacing="tight">
+            <Button primary onClick={handleActivateCart}>
+              Open theme editor
+            </Button>
+            <Button onClick={() => navigate("/pricing")}>View pricing</Button>
+            <Button onClick={() => navigate("/install")}>Setup guide</Button>
+          </Stack>
+        </div>
+      </div>
 
-          {/* Status Banner (if error) */}
-          {activateError && (
-            <Layout.Section>
-              <Banner status="critical" onDismiss={() => setActivateError(null)}>
-                {activateError}
-              </Banner>
-            </Layout.Section>
-          )}
-
-          {/* Callout Section */}
-          <Layout.Section>
-            <div className="custom-callout-container">
-              <CalloutCard
-                title="Activate Floating Cart Button"
-                illustration="https://cdn.shopify.com/s/assets/admin/checkout/settings-customizecart-705f57c725ac05be5a34ec20c05b94298cb8afd10aac7bd9c7ad02030f48cfa0.svg"
-                primaryAction={{
-                  content: "Activate Now ➡️",
-                  onAction: handleActivateCart,
-                }}
-              >
-                <p>
-                  Ready to enhance your store's cart experience? Click 'Activate Now'
-                  to open the Shopify Theme Editor and add the Floating Cart Button
-                  to your theme.
-                </p>
-              </CalloutCard>
-            </div>
-          </Layout.Section>
-
-          {/* Intro Section */}
-          <Layout.Section>
-            <TextContainer>
-              <DisplayText size="Large"><span>Introduction</span></DisplayText>
-              <p>
-                🚀 Welcome to Floating Cart Button by MeroxIO! Transform your
-                Shopify store with a seamless, intuitive, and mobile-friendly
-                cart experience.
-              </p>
-              <ul className="appFeatures">
-                <li><strong>✅ Live Cart Updates – </strong> Real-time updates.</li>
-                <li><strong>✅ Quick Cart Access – </strong> Instant drawer/page open.</li>
-                <li><strong>✅ Mobile-Optimized – </strong> Designed for mobile users.</li>
-                <li><strong>✅ Automatic Currency Adaptation – </strong> For global stores.</li>
-                <li><strong>✅ Analytics Dashboard – </strong> Track cart interactions.</li>
-                <li><strong>✅ Theme Compatibility – </strong> Works with all Shopify themes.</li>
-                <li><strong>✅ Priority Support – </strong> Faster response for premium users.</li>
-              </ul>
-            </TextContainer>
-          </Layout.Section>
-
-          {/* Video Section */}
-          <Layout.Section secondary>
-            <Card>
-              <div
-                className="videoWrapper"
-                style={{
-                  backgroundImage: `url(${shopifyBackground})`,
-                  padding: "22px",
-                }}
-              >
-                <video
-                  src="https://cdn.shopify.com/videos/c/o/v/9f176878242244b5a824915f62f4087b.mp4"
-                  controls
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  style={{ width: "100%", height: "100%" }}
+      <Layout>
+        <Layout.Section>
+          <Card sectioned>
+            {loading ? (
+              <SkeletonBodyText lines={4} />
+            ) : (
+              <div>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 14px",
+                    borderRadius: 999,
+                    background: statusTone.background,
+                    color: statusTone.color,
+                    fontWeight: 700,
+                    marginBottom: 16,
+                  }}
                 >
-                  Your browser does not support the video tag.
-                </video>
+                  {statusTone.label}
+                </div>
+                <h2 style={{ marginTop: 0, marginBottom: 10, color: "#111827" }}>
+                  Subscription status
+                </h2>
+                <p style={{ marginTop: 0, color: "#4b5563", lineHeight: 1.7 }}>
+                  {premiumActive
+                    ? "Your store has access to the full premium storefront controls and production-ready pricing flow."
+                    : "You're on the Free plan. Upgrade when you want advanced styling controls, richer storefront options, and a polished live setup."}
+                </p>
+                <div style={{ marginTop: 18 }}>
+                  <Button primary={premiumActive} onClick={() => navigate("/pricing")}>
+                    {premiumActive ? "Manage premium" : "Upgrade to Premium"}
+                  </Button>
+                </div>
               </div>
-            </Card>
-          </Layout.Section>
-        </Layout>
-      </Page>
-    </Frame>
+            )}
+          </Card>
+        </Layout.Section>
+
+        <Layout.Section oneHalf>
+          <CalloutCard
+            title="Go live in minutes"
+            primaryAction={{
+              content: "Activate app embed",
+              onAction: handleActivateCart,
+            }}
+            illustration="https://cdn.shopify.com/shopifycloud/web/assets/v1/6f0c7f1a5d9c4de6f9f6a9d7d6c948fb.svg"
+          >
+            <p>
+              Jump straight into the theme editor and switch on the floating cart
+              embed for the current theme.
+            </p>
+          </CalloutCard>
+        </Layout.Section>
+
+        <Layout.Section oneHalf>
+          <Card sectioned title="What Premium unlocks">
+            <Stack vertical spacing="loose">
+              <div>Advanced customization controls for storefront styling.</div>
+              <div>Premium design presets for a sharper floating cart experience.</div>
+              <div>Product total price support and richer cart presentation.</div>
+              <div>Production-ready setup for the `floating.solnix.store` domain.</div>
+            </Stack>
+          </Card>
+        </Layout.Section>
+      </Layout>
+    </Page>
   );
 }

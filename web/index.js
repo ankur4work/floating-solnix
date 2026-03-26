@@ -9,6 +9,12 @@ import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from "dotenv";
 import createDbConnection from "./analytics-db.js";
 import { connectToMongoDB } from "./mongodb.js";
+import {
+  FREE_PLAN,
+  PREMIUM_PLAN,
+  PREMIUM_PLAN_KEY,
+  IS_TEST,
+} from "./config/plans.js";
 
 dotenv.config();
 
@@ -21,7 +27,6 @@ const STATIC_PATH =
 
 const app = express();
 
-// Shopify auth & webhooks
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
@@ -33,83 +38,76 @@ app.post(
   shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
-// ---- Plans / constants ----
-const PREMIUM_PLAN = "MeroxIO Basic";       // your “paid/basic” plan
-const UNLIMITED_PLAN = "MeroxIO Premium";    // your “premium/unlimited” plan
-const MEROXIO = "meroxio";
-const PREMIUM_PLAN_KEY = "floating-cart-button-premium";
-const IS_TEST = false;
-const APP_NAME = "Floating Cart Button";
+const SOLNIX = "solnix";
+const APP_NAME = "Solnix FloatCart";
 const ANALYTICS_DB_PREFIX = "floating_cart_button";
-const HTTP_STATUS = { OK: 200, BAD_REQUEST: 400, UNAUTHORIZED: 401, INTERNAL_SERVER_ERROR: 500 };
+const HTTP_STATUS = {
+  OK: 200,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  INTERNAL_SERVER_ERROR: 500,
+};
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.urlencoded({ extended: true }));
 
-/* -------------------- Subscription Check (MongoDB Session) -------------------- */
 app.get("/api/floating-cart/hasSubscription", async (req, res) => {
   try {
-    console.log("inside hassubs");
     const { shop } = req.query;
 
     if (!shop) {
-      console.warn("Missing 'shop' parameter in request");
-      return res.status(400).send({ error: "Missing 'shop' parameter" });
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: "Missing 'shop' parameter",
+      });
     }
 
-    console.log(`Request received from shop: ${shop}`);
     const collection = await connectToMongoDB();
     const session = await collection.findOne({ shop });
 
     if (!session) {
-      console.warn(`No session found for shop: ${shop}`);
-      return res.status(401).send({ error: "Unauthorized: Session not found" });
+      return res.status(HTTP_STATUS.UNAUTHORIZED).send({
+        error: "Unauthorized: Session not found",
+      });
     }
 
     const tier = await getPlanTier(session);
-    console.log(`Subscription status for shop ${shop}: ${tier}`);
 
-    return res.status(200).send({
-      hasActiveSubscription: tier !== "free",
-      tier, // free | premium | unlimited
+    return res.status(HTTP_STATUS.OK).send({
+      hasActiveSubscription: tier === PREMIUM_PLAN,
+      tier,
     });
   } catch (error) {
     console.error("Error in hasSubscription:", error.message);
-    return res.status(500).send({ error: "Failed to fetch subscription" });
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: "Failed to fetch subscription",
+    });
   }
 });
 
-/* ---------------------- Subscription Utilities ---------------------- */
 async function getPlanTier(session) {
   try {
-    const hasUnlimited = await shopify.api.billing.check({
-      session,
-      plans: [UNLIMITED_PLAN],
-      isTest: IS_TEST,
-    });
-    if (hasUnlimited) return "unlimited";
-
     const hasPremium = await shopify.api.billing.check({
       session,
       plans: [PREMIUM_PLAN],
       isTest: IS_TEST,
     });
-    if (hasPremium) return "premium";
 
-    return "free";
+    return hasPremium ? PREMIUM_PLAN : FREE_PLAN;
   } catch (error) {
     console.error("Error checking plan tier:", error);
-    return "free";
+    return FREE_PLAN;
   }
 }
 
-/* ---------------------- Analytics Event Logging ---------------------- */
-app.post("/api/meroxio-proxy/:event", async (req, res) => {
+app.post("/api/solnix-proxy/:event", async (req, res) => {
   try {
     const { event } = req.params;
     const { merchantId, ...eventData } = req.body;
+
     if (!merchantId) {
-      return res.status(400).send({ error: "Missing 'merchantId'" });
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: "Missing 'merchantId'",
+      });
     }
 
     const db = createDbConnection(ANALYTICS_DB_PREFIX);
@@ -120,19 +118,26 @@ app.post("/api/meroxio-proxy/:event", async (req, res) => {
       [event, merchantId, eventDataString],
       function (err) {
         if (err) {
-          return res.status(500).send({ error: "Failed to log event" });
+          return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+            error: "Failed to log event",
+          });
         }
-        res.status(200).send({ success: true, eventId: this.lastID });
+
+        res.status(HTTP_STATUS.OK).send({
+          success: true,
+          eventId: this.lastID,
+        });
       }
     );
   } catch (error) {
-    res.status(500).send({ error: "Failed to handle event" });
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: "Failed to handle event",
+    });
   }
 });
 
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
-/* ---------------------- Utility Functions ---------------------- */
 const handleError = (res, statusCode, message) => {
   console.error(message);
   res.status(statusCode).send({ error: message });
@@ -140,16 +145,15 @@ const handleError = (res, statusCode, message) => {
 
 async function storeShopDetails(shopDetails) {
   try {
-    const response = await fetch(
-      "https://app.meroxio.com/app-installation-data-store/storedata",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(shopDetails),
-      }
-    );
-    if (!response.ok) throw new Error("Network response was not ok.");
-    console.log("Shop details stored successfully.");
+    const response = await fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(shopDetails),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok.");
+    }
   } catch (error) {
     console.error("Failed to store shop details:", error.message);
   }
@@ -165,163 +169,148 @@ const shopDetailsQuery = `
   }
 }`;
 
-/* --------------------------- Subscription Routes -------------------------- */
-
-// Create / Switch Subscription
-app.get("/api/createSubscription", async (req, res) => {
+app.get("/api/createSubscription", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
-    const planParam = (req.query.plan || "").toString().toLowerCase();
-    const planName = planParam === "unlimited" ? UNLIMITED_PLAN : PREMIUM_PLAN;
 
     const hasPayment = await shopify.api.billing.check({
       session,
-      plans: [planName],
+      plans: [PREMIUM_PLAN],
       isTest: IS_TEST,
     });
 
     if (hasPayment) {
-      console.log(`✅ ${session.shop} is already subscribed to: ${planName}`);
-      res.status(200).send({ isActiveSubscription: true, plan: planName });
-    } else {
-      console.log(`➡️ ${session.shop} is switching/creating subscription for: ${planName}`);
-      const redirectUrl = await shopify.api.billing.request({
-        session,
-        plan: planName,
-        isTest: IS_TEST,
-      });
-      res.status(200).send({
-        isActiveSubscription: false,
-        plan: planName,
-        confirmationUrl: redirectUrl,
+      return res.status(HTTP_STATUS.OK).send({
+        isActiveSubscription: true,
+        plan: PREMIUM_PLAN,
       });
     }
+
+    const confirmationUrl = await shopify.api.billing.request({
+      session,
+      plan: PREMIUM_PLAN,
+      isTest: IS_TEST,
+    });
+
+    return res.status(HTTP_STATUS.OK).send({
+      isActiveSubscription: false,
+      plan: PREMIUM_PLAN,
+      confirmationUrl,
+    });
   } catch (error) {
-    console.error("❌ Failed to create subscription:", error);
-    res.status(500).send({ error: "Failed to create subscription" });
+    console.error("Failed to create subscription:", error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: "Failed to create subscription",
+    });
   }
 });
 
-// Cancel Subscription
-app.get("/api/cancelSubscription", async (req, res) => {
+app.get("/api/cancelSubscription", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
 
-    const hasPremium = await shopify.api.billing.check({ session, plans: [PREMIUM_PLAN], isTest: IS_TEST });
-    const hasUnlimited = await shopify.api.billing.check({ session, plans: [UNLIMITED_PLAN], isTest: IS_TEST });
+    const hasPremium = await shopify.api.billing.check({
+      session,
+      plans: [PREMIUM_PLAN],
+      isTest: IS_TEST,
+    });
 
-    if (hasPremium || hasUnlimited) {
-      const planToCancel = hasUnlimited ? UNLIMITED_PLAN : PREMIUM_PLAN;
-      console.log(`⚠️ ${session.shop} cancelling plan: ${planToCancel}`);
-
-      const subscriptionStatus = await cancelSubscription(session);
-      console.log(`✅ ${session.shop} subscription cancelled. Status: ${subscriptionStatus}`);
-
-      // Remove app-owned metafield if present
-      const client = new shopify.api.clients.Graphql({ session });
-      const currentInstallations = await client.request(
-        CURRENT_APP_INSTALLATION,
-        { variables: { namespace: MEROXIO, key: PREMIUM_PLAN_KEY } }
-      );
-
-      const installation = currentInstallations?.currentAppInstallation;
-      const ownerId = installation?.id;
-      const metafield = installation?.metafield;
-
-      if (ownerId && metafield) {
-        console.log(`🗑️ Removing appOwnedMetafield for shop: ${session.shop}`);
-        const deleteResp = await client.request(
-          APP_OWNED_METAFIELD_DELETE,
-          { variables: { ownerId, namespace: MEROXIO, key: PREMIUM_PLAN_KEY } }
-        );
-
-        const delErrors = deleteResp?.appOwnedMetafieldDelete?.userErrors || [];
-        if (delErrors.length) {
-          console.error("❌ Failed to delete metafield:", delErrors);
-        } else {
-          console.log(`✅ Metafield deleted successfully for shop: ${session.shop}`);
-        }
-      }
-
-      // Downgrade after cancel
-      if (["CANCELLED", "ACTIVE_CANCELLED"].includes(subscriptionStatus)) {
-        console.log(`⬇️ Downgrading ${session.shop} to FREE plan...`);
-        // 👉 Add your downgrade logic here
-      }
-
-      return res.status(200).send({ status: subscriptionStatus, cancelledPlan: planToCancel });
+    if (!hasPremium) {
+      return res.status(HTTP_STATUS.OK).send({
+        status: "No subscription found",
+      });
     }
 
-    console.log(`ℹ️ ${session.shop} has no active subscription to cancel`);
-    res.status(200).send({ status: "No subscription found" });
+    const subscriptionStatus = await cancelSubscription(session);
+    const client = new shopify.api.clients.Graphql({ session });
+    const currentInstallations = await client.request(CURRENT_APP_INSTALLATION, {
+      variables: { namespace: SOLNIX, key: PREMIUM_PLAN_KEY },
+    });
+
+    const installation = currentInstallations?.currentAppInstallation;
+    const ownerId = installation?.id;
+    const metafield = installation?.metafield;
+
+    if (ownerId && metafield) {
+      const deleteResp = await client.request(APP_OWNED_METAFIELD_DELETE, {
+        variables: { ownerId, namespace: SOLNIX, key: PREMIUM_PLAN_KEY },
+      });
+
+      const delErrors = deleteResp?.appOwnedMetafieldDelete?.userErrors || [];
+      if (delErrors.length) {
+        console.error("Failed to delete metafield:", delErrors);
+      }
+    }
+
+    return res.status(HTTP_STATUS.OK).send({
+      status: subscriptionStatus,
+      cancelledPlan: PREMIUM_PLAN,
+    });
   } catch (error) {
-    console.error("❌ Failed to cancel subscription:", error);
-    res.status(500).send({ error: "Failed to cancel subscription" });
+    console.error("Failed to cancel subscription:", error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: "Failed to cancel subscription",
+    });
   }
 });
 
-// Check Active Subscription + ensure premium metafield
 app.get("/api/hasActiveSubscription", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
     const tier = await getPlanTier(session);
-    const hasActive = tier !== "free";
-
-    console.log(`🔎 ${session.shop} subscription check → Current tier: ${tier}`);
+    const hasActive = tier === PREMIUM_PLAN;
 
     if (!hasActive) {
-      return res.status(200).send({ hasActiveSubscription: false });
+      return res.status(HTTP_STATUS.OK).send({
+        hasActiveSubscription: false,
+        tier: FREE_PLAN,
+      });
     }
 
     const client = new shopify.api.clients.Graphql({ session });
-    const currentInstallations = await client.request(
-      CURRENT_APP_INSTALLATION,
-      { variables: { namespace: MEROXIO, key: PREMIUM_PLAN_KEY } }
-    );
+    const currentInstallations = await client.request(CURRENT_APP_INSTALLATION, {
+      variables: { namespace: SOLNIX, key: PREMIUM_PLAN_KEY },
+    });
 
     const installation = currentInstallations?.currentAppInstallation;
     const ownerId = installation?.id;
     const existing = installation?.metafield;
 
     if (!existing && ownerId) {
-      console.log(`🆕 Creating metafield for paid plan on shop: ${session.shop}`);
-      const createResp = await client.request(
-        CREATE_APP_DATA_METAFIELD,
-        {
-          variables: {
-            metafieldsSetInput: [
-              { namespace: MEROXIO, key: PREMIUM_PLAN_KEY, type: "boolean", value: "true", ownerId },
-            ],
-          },
-        }
-      );
+      const createResp = await client.request(CREATE_APP_DATA_METAFIELD, {
+        variables: {
+          metafieldsSetInput: [
+            {
+              namespace: SOLNIX,
+              key: PREMIUM_PLAN_KEY,
+              type: "boolean",
+              value: "true",
+              ownerId,
+            },
+          ],
+        },
+      });
 
       const createErrors = createResp?.metafieldsSet?.userErrors || [];
       if (createErrors.length) {
-        console.error("❌ Failed to add metafield:", createErrors);
-      } else {
-        console.log(`✅ Metafield created for shop: ${session.shop}`);
+        console.error("Failed to add metafield:", createErrors);
       }
     }
 
-    res.status(200).send({ hasActiveSubscription: true, tier });
+    return res.status(HTTP_STATUS.OK).send({
+      hasActiveSubscription: true,
+      tier,
+    });
   } catch (error) {
-    console.error("❌ Failed to fetch subscription:", error);
-    res.status(500).send({ error: "Failed to fetch subscription" });
+    console.error("Failed to fetch subscription:", error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: "Failed to fetch subscription",
+    });
   }
 });
 
-
-/* --------------------------- Helper for Plan Info --------------------------- */
 function getOrderLimit(planTier) {
-  switch (planTier) {
-    case "unlimited":
-      return Number.MAX_SAFE_INTEGER;
-    case "premium":
-      return 1000;
-    default:
-      return 100;
-  }
+  return planTier === PREMIUM_PLAN ? Number.MAX_SAFE_INTEGER : 100;
 }
 
 async function getStoreId(session) {
@@ -330,20 +319,19 @@ async function getStoreId(session) {
 
 async function getCurrentOrderCount(storeId) {
   console.log(`Fetching current order count for store: ${storeId}`);
-  return 0; // replace with real count if needed
+  return 0;
 }
 
-app.get("/api/meroxio-proxy/plan-info", async (_req, res) => {
+app.get("/api/solnix-proxy/plan-info", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
     const storeId = await getStoreId(session);
-
     const planTier = await getPlanTier(session);
     const orderLimit = getOrderLimit(planTier);
     const currentCount = await getCurrentOrderCount(storeId);
     const remaining = Math.max(0, orderLimit - currentCount);
 
-    res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       planTier,
       orderLimit,
       currentCount,
@@ -352,29 +340,39 @@ app.get("/api/meroxio-proxy/plan-info", async (_req, res) => {
     });
   } catch (error) {
     console.error("Failed to get plan info:", error);
-    res.status(500).json({ error: "Failed to get plan information" });
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      error: "Failed to get plan information",
+    });
   }
 });
 
-/* --------------------------- Misc APIs --------------------------- */
-app.get("/api/getshop", async (req, res) => {
+app.get("/api/getshop", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
     const shopName = session ? session.shop : "Shop name not found";
     res.json({ shop: shopName });
   } catch (err) {
     console.error("Error fetching shop:", err);
-    res.status(500).json({ error: "Failed to fetch shop" });
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      error: "Failed to fetch shop",
+    });
   }
 });
 
 app.get("/api/store-details", async (_req, res) => {
   const session = res.locals.shopify.session;
-  if (!session) return handleError(res, HTTP_STATUS.UNAUTHORIZED, "No active session found.");
+  if (!session) {
+    return handleError(
+      res,
+      HTTP_STATUS.UNAUTHORIZED,
+      "No active session found."
+    );
+  }
+
   try {
     const client = new shopify.api.clients.Graphql({ session });
     const response = await client.request(shopDetailsQuery);
-    const shopData = (response?.shop ?? response?.data?.shop ?? response?.data) || {};
+    const shopData = response?.shop ?? response?.data?.shop ?? response?.data ?? {};
     const { name, email, primaryDomain, plan } = shopData;
 
     await storeShopDetails({
@@ -385,12 +383,12 @@ app.get("/api/store-details", async (_req, res) => {
       plan: plan?.displayName,
     });
 
-    res.status(HTTP_STATUS.OK).send({
+    return res.status(HTTP_STATUS.OK).send({
       message: "Shop details fetched successfully",
       data: { name, email, primaryDomain, plan },
     });
   } catch (error) {
-    handleError(
+    return handleError(
       res,
       HTTP_STATUS.INTERNAL_SERVER_ERROR,
       `Failed to fetch store details: ${error.message}`
@@ -398,21 +396,17 @@ app.get("/api/store-details", async (_req, res) => {
   }
 });
 
-/* --------------------------- Serve Frontend --------------------------- */
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res) => {
   return res
-    .status(200)
+    .status(HTTP_STATUS.OK)
     .set("Content-Type", "text/html")
     .send(readFileSync(join(STATIC_PATH, "index.html")));
 });
 
-app.listen(PORT, () => console.log(`🚀 Server running  on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-/* --------------------------- GraphQL Queries --------------------------- */
-
-// Read app-owned metafield on the app installation
 const CURRENT_APP_INSTALLATION = `
   query appSubscription($namespace: String!, $key: String!) {
     currentAppInstallation {
@@ -427,7 +421,6 @@ const CURRENT_APP_INSTALLATION = `
   }
 `;
 
-// Create/Update app-owned metafield
 const CREATE_APP_DATA_METAFIELD = `
   mutation CreateAppDataMetafield($metafieldsSetInput: [MetafieldsSetInput!]!) {
     metafieldsSet(metafields: $metafieldsSetInput) {
@@ -437,7 +430,6 @@ const CREATE_APP_DATA_METAFIELD = `
   }
 `;
 
-// Delete app-owned metafield (correct for app-owned metafields)
 const APP_OWNED_METAFIELD_DELETE = `
   mutation appOwnedMetafieldDelete($ownerId: ID!, $namespace: String!, $key: String!) {
     appOwnedMetafieldDelete(ownerId: $ownerId, namespace: $namespace, key: $key) {
