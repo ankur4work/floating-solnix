@@ -5,8 +5,9 @@ ENV SHOPIFY_API_KEY=$SHOPIFY_API_KEY
 EXPOSE 8081
 WORKDIR /app
 COPY web .
-RUN npm install
-RUN cd frontend && npm install && \
+# Install with devDeps so the Vite build works (NODE_ENV=production skips devDeps)
+RUN npm install --include=dev
+RUN cd frontend && npm install --include=dev && \
     cd node_modules/@shopify/app-bridge-core && \
     for dir in actions actions/Modal actions/Navigation actions/Menu actions/Link; do \
       if [ -d "$dir" ]; then \
@@ -17,4 +18,5 @@ RUN cd frontend && npm install && \
       fi; \
     done && \
     cd /app/frontend && npm run build
+ENV NODE_ENV=production
 CMD ["npm", "run", "serve"]
