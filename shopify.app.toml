@@ -2,17 +2,18 @@
 
 client_id = "1f11bdd66beb566cff21f9da01b0ddb5"
 name = "solnix-floatcart"
-application_url = "https://floating.solnix.store"
+application_url = "https://s10pch8xnyym0z0y73xlpdp4.91.239.208.85.sslip.io"
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2026-04"
 
   [[webhooks.subscriptions]]
-  uri = "/api/webhooks"
+  uri = "https://s10pch8xnyym0z0y73xlpdp4.91.239.208.85.sslip.io/api/webhooks"
   compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
 
 [access_scopes]
@@ -20,11 +21,11 @@ scopes = "write_cart_transforms,write_draft_orders,write_products"
 
 [auth]
 redirect_urls = [
-  "https://floating.solnix.store/api/auth/callback"
+  "https://s10pch8xnyym0z0y73xlpdp4.91.239.208.85.sslip.io/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://floating.solnix.store/api/floating-cart"
+url = "https://s10pch8xnyym0z0y73xlpdp4.91.239.208.85.sslip.io/api/floating-cart"
 subpath = "floating-cart"
 prefix = "apps"
 

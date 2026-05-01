@@ -1,6 +1,7 @@
 // @ts-check
 import { join } from "path";
 import { readFileSync } from "fs";
+import crypto from "crypto";
 import express from "express";
 import serveStatic from "serve-static";
 import shopify from "./shopify.js";
@@ -34,8 +35,41 @@ app.get(
   shopify.redirectToShopifyOrAppRoot()
 );
 app.post(
-  shopify.config.webhooks.path,
-  shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
+  "/api/webhooks",
+  express.text({ type: "*/*" }),
+  async (req, res) => {
+    const hmacHeader = req.headers["x-shopify-hmac-sha256"];
+    if (!hmacHeader) return res.status(400).send();
+
+    const generatedHash = crypto
+      .createHmac("sha256", process.env.SHOPIFY_API_SECRET)
+      .update(req.body, "utf8")
+      .digest("base64");
+
+    let valid = false;
+    try {
+      valid = crypto.timingSafeEqual(
+        Buffer.from(generatedHash, "base64"),
+        Buffer.from(hmacHeader, "base64")
+      );
+    } catch {
+      return res.status(400).send();
+    }
+
+    if (!valid) return res.status(401).send();
+
+    res.status(200).send();
+
+    const topic = String(req.headers["x-shopify-topic"] ?? "")
+      .toUpperCase().replace(/\//g, "_");
+    const shop = req.headers["x-shopify-shop-domain"];
+    const webhookId = req.headers["x-shopify-webhook-id"];
+    const handler = GDPRWebhookHandlers[topic];
+    if (handler?.callback) {
+      handler.callback(topic, shop, req.body, webhookId)
+        .catch(err => console.error(`[Webhook] ${topic} handler error:`, err));
+    }
+  }
 );
 
 const SOLNIX = "solnix";
