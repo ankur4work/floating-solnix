@@ -3,7 +3,8 @@ import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import react from "@vitejs/plugin-react";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// Vite 2.x predefines __dirname via esbuild so we use a different name
+const _configDir = dirname(fileURLToPath(import.meta.url));
 process.env = { ...process.env, ...loadEnv("", process.cwd()) };
 
 console.log("API key: ", process.env.SHOPIFY_API_KEY);
@@ -28,7 +29,7 @@ if (host === "localhost") {
 }
 
 const bridgeCorePath = resolve(
-  __dirname,
+  _configDir,
   "node_modules/@shopify/app-bridge-core"
 );
 
@@ -58,7 +59,7 @@ nestedActions.forEach((name) => {
 });
 
 export default defineConfig({
-  root: __dirname,
+  root: _configDir,
   plugins: [react()],
   define: {
     "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
