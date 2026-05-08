@@ -20,7 +20,7 @@ export const PREMIUM_TRIAL_DAYS = parseNumber(
   process.env.SHOPIFY_PREMIUM_TRIAL_DAYS,
   0,
 );
-export const IS_TEST = true;
+export const IS_TEST = false;
 
 export const billingConfig = {
   [PREMIUM_PLAN]: {
